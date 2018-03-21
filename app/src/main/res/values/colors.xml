@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="color_white_ffffff">#ffffff</color>
+    <color name="color_line_dadada">#dadada</color>
+    <color name="color_edithint_b4b4b4">#b4b4b4</color>
+    <color name="color_text_black_3e3e39">#3e3e39</color>
+    <color name="color_emote_divder_ffa1a1a1">#ffa1a1a1</color>
+    <color name="color_msg_system_time_bg_20000000">#20000000</color>
+    <color name="color_chat_send_status_818181">#818181</color>
+    <color name="color_1e1e1e">#1e1e1e</color>
+
+
+
+</resources>
