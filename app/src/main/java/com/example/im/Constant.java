@@ -1,5 +1,9 @@
 package com.example.im;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by ganchenqing on 2018/3/20.
  */
@@ -22,6 +26,14 @@ public class Constant {
 //    public static final int TYPE_RECEIVER_VIDEO = 7;
 
     public static int REQUEST_CODE_SELECT_IMG = 1;
+
+    public static int SEND_SUC = 1000;
+    public static int SENDING = 1001;
+    public static int SEND_FAILED = 1002;
+
+    public static final int REQUEST_CAMERA = 28;
+
+
 
 
 }

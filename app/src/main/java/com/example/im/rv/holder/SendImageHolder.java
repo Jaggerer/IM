@@ -11,6 +11,10 @@ import com.example.im.Message;
 import com.example.im.R;
 import com.example.im.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.TimeUtils;
+
+import static com.example.im.Constant.SENDING;
+import static com.example.im.Constant.SEND_FAILED;
 
 /**
  * 发送的文本类型
@@ -39,24 +43,25 @@ public class SendImageHolder extends BaseViewHolder<Message> {
         final Message message = o;
         String avatar = getAvatarFromServer(message.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
-
+        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        mTvTime.setText(time);
         //
         int status = message.getSendStatus();
 
-//        if (status == SEND_FAILED) {
-//            mIvFailResend.setVisibility(View.VISIBLE);
-//            mPbLoad.setVisibility(View.GONE);
-//            mTvSendStatus.setVisibility(View.INVISIBLE);
-//        } else if (status == SENDING) {
-//            mPbLoad.setVisibility(View.VISIBLE);
-//            mIvFailResend.setVisibility(View.GONE);
-//            mTvSendStatus.setVisibility(View.INVISIBLE);
-//        } else {
-//            mTvSendStatus.setVisibility(View.VISIBLE);
-//            mTvSendStatus.setText("已发送");
-//            mIvFailResend.setVisibility(View.GONE);
-//            mPbLoad.setVisibility(View.GONE);
-//        }
+        if (status == SEND_FAILED) {
+            mIvFailResend.setVisibility(View.VISIBLE);
+            mPbLoad.setVisibility(View.GONE);
+            mTvSendStatus.setVisibility(View.INVISIBLE);
+        } else if (status == SENDING) {
+            mPbLoad.setVisibility(View.VISIBLE);
+            mIvFailResend.setVisibility(View.GONE);
+            mTvSendStatus.setVisibility(View.INVISIBLE);
+        } else {
+            mTvSendStatus.setVisibility(View.VISIBLE);
+            mTvSendStatus.setText("已发送");
+            mIvFailResend.setVisibility(View.GONE);
+            mPbLoad.setVisibility(View.GONE);
+        }
 
         ImageLoaderFactory.getLoader().load(mIvPicture, message.getFileDir(), R.mipmap.ic_launcher, null);
 

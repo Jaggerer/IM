@@ -12,6 +12,7 @@ import com.example.im.Message;
 import com.example.im.R;
 import com.example.im.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
@@ -39,7 +40,8 @@ public class ReceiveImageHolder extends BaseViewHolder<Message> {
         message = o;
         String avatar = getAvatarFromServer(message.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
-
+        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        mTvTime.setText(time);
         //显示图片
         ImageLoaderFactory.getLoader().load(mIvPicture, message.getFileDir(), R.mipmap.ic_launcher, new ImageLoadingListener() {
             ;
