@@ -402,6 +402,32 @@ public class ChatActivity extends AppCompatActivity {
 
     //todo 发送声音
     public void sendVoiceMessage(String localPath, int recordTime) {
+        final Message message = new Message();
+        message.setMessageType(Constant.TYPE_VOICE);
+        message.setCreateTime(System.currentTimeMillis());
+        message.setFromId("1");
+        message.setToId("2");
+        message.setFileDir(localPath);
+        message.setSendStatus(Constant.SENDING);
+        message.setRecorderLength(recordTime);
+        adapter.addMessage(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    message.setSendStatus(Constant.SEND_SUC);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 

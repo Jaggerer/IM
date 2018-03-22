@@ -14,6 +14,9 @@ import com.example.im.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
+import static com.example.im.Constant.SENDING;
+import static com.example.im.Constant.SEND_FAILED;
+
 /**
  * 发送的语音类型
  */
@@ -50,26 +53,26 @@ public class SendVoiceHolder extends BaseViewHolder<Message> {
         mTvtime.setText(time);
 
 //获得语音长度
-        int length = getVoiceLength(message.getFileDir());
+        int length = message.getRecorderLength();
         mTvVoiceLength.setText(String.valueOf(length));
 
-//        int status = message.getSendStatus();
-//        if (status == SEND_FAILED) {
-//            mIvFailresend.setVisibility(View.VISIBLE);
-//            mPbProgressLoad.setVisibility(View.GONE);
-//            mTvSendtatus.setVisibility(View.INVISIBLE);
-//            mTvVoiceLength.setVisibility(View.INVISIBLE);
-//        } else if (status == SENDING) {
-//            mPbProgressLoad.setVisibility(View.VISIBLE);
-//            mIvFailresend.setVisibility(View.GONE);
-//            mTvSendtatus.setVisibility(View.INVISIBLE);
-//            mTvVoiceLength.setVisibility(View.INVISIBLE);
-//        } else {//发送成功
-//            mIvFailresend.setVisibility(View.GONE);
-//            mPbProgressLoad.setVisibility(View.GONE);
-//            mTvSendtatus.setVisibility(View.GONE);
-//            mTvVoiceLength.setVisibility(View.VISIBLE);
-//        }
+        int status = message.getSendStatus();
+        if (status == SEND_FAILED) {
+            mIvFailresend.setVisibility(View.VISIBLE);
+            mPbProgressLoad.setVisibility(View.GONE);
+            mTvSendtatus.setVisibility(View.INVISIBLE);
+            mTvVoiceLength.setVisibility(View.INVISIBLE);
+        } else if (status == SENDING) {
+            mPbProgressLoad.setVisibility(View.VISIBLE);
+            mIvFailresend.setVisibility(View.GONE);
+            mTvSendtatus.setVisibility(View.INVISIBLE);
+            mTvVoiceLength.setVisibility(View.INVISIBLE);
+        } else {//发送成功
+            mIvFailresend.setVisibility(View.GONE);
+            mPbProgressLoad.setVisibility(View.GONE);
+            mTvSendtatus.setVisibility(View.GONE);
+            mTvVoiceLength.setVisibility(View.VISIBLE);
+        }
 
         mIvVoice.setOnClickListener(new NewRecordPlayClickListener(getContext(), message, mIvVoice));
 

@@ -21,6 +21,8 @@ public class Message {
 
     private int sendStatus;
 
+    private int recorderLength;
+
 
     public String getFromId() {
         return fromId;
@@ -76,5 +78,13 @@ public class Message {
 
     public void setSendStatus(int sendStatus) {
         this.sendStatus = sendStatus;
+    }
+
+    public int getRecorderLength() {
+        return recorderLength;
+    }
+
+    public void setRecorderLength(int recorderLength) {
+        this.recorderLength = recorderLength;
     }
 }
