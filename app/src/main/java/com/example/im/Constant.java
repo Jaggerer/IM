@@ -32,6 +32,7 @@ public class Constant {
     public static int SEND_FAILED = 1002;
 
     public static final int REQUEST_CAMERA = 28;
+    public static final int REQUEST_MIC = 29;
 
 
 

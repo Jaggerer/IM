@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -99,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
 
         initAdapter();
         initBottomView();
+        initVoiceView();
         initListener();
     }
 
@@ -145,6 +147,54 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+//        发送语音
+        mBtnChatVoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(ChatActivity.this, android.Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ChatActivity.this, new String[]{
+                            android.Manifest.permission.RECORD_AUDIO}, Constant.REQUEST_MIC);
+                } else {
+                    showSpeakeLayout();
+                }
+            }
+        });
+
+        mBtnChatKeybord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditState(false);
+            }
+        });
+
+    }
+
+    private void showSpeakeLayout() {
+        mEtText.setVisibility(View.GONE);
+        mLlMore.setVisibility(View.GONE);
+        mBtnChatVoice.setVisibility(View.GONE);
+        mBtnChatKeybord.setVisibility(View.VISIBLE);
+        mBtnSpeak.setVisibility(View.VISIBLE);
+        hideSoftInputView();
+    }
+
+    private void showEditState(boolean isEmo) {
+        mEtText.setVisibility(View.VISIBLE);
+        mBtnChatKeybord.setVisibility(View.GONE);
+        mBtnChatVoice.setVisibility(View.VISIBLE);
+        mBtnSpeak.setVisibility(View.GONE);
+        mEtText.requestFocus();
+        if (isEmo) {
+            mLlMore.setVisibility(View.VISIBLE);
+            mLlMore.setVisibility(View.VISIBLE);
+            mLlEmj.setVisibility(View.VISIBLE);
+            mLlAdd.setVisibility(View.GONE);
+            hideSoftInputView();
+        } else {
+            mLlMore.setVisibility(View.GONE);
+            showSoftInputView();
+        }
     }
 
     public void applyWritePermission() {
@@ -171,9 +221,15 @@ public class ChatActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.REQUEST_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             useCamera();
-        } else {
+        } else if (requestCode == Constant.REQUEST_CAMERA) {
             // 没有获取 到权限，从新请求，或者关闭app
             Toast.makeText(this, "需要存储权限", Toast.LENGTH_SHORT).show();
+        }
+
+        if (requestCode == Constant.REQUEST_MIC && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            showSpeakeLayout();
+        } else if (requestCode == Constant.REQUEST_MIC) {
+            Toast.makeText(this, "需要麦克风权限", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -406,6 +462,21 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    private void initVoiceAnimRes() {
+        drawable_Anims = new Drawable[]{
+                getResources().getDrawable(R.mipmap.chat_icon_voice2),
+                getResources().getDrawable(R.mipmap.chat_icon_voice3),
+                getResources().getDrawable(R.mipmap.chat_icon_voice4),
+                getResources().getDrawable(R.mipmap.chat_icon_voice5),
+                getResources().getDrawable(R.mipmap.chat_icon_voice6)};
+    }
+
+    private void initVoiceView() {
+        mBtnSpeak.setOnTouchListener(new VoiceTouchListener());
+        initVoiceAnimRes();
+        initRecordManager();
+    }
+
     public String getCurrentUserId() {
         return "1";
     }
@@ -419,6 +490,11 @@ public class ChatActivity extends AppCompatActivity {
                     if (!checkSdCard()) {
                         toast("发送语音需要sdcard支持！");
                         return false;
+                    }
+                    if (ContextCompat.checkSelfPermission(ChatActivity.this, android.Manifest.permission.RECORD_AUDIO)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ChatActivity.this, new String[]{
+                                android.Manifest.permission.RECORD_AUDIO}, 1);
                     }
                     try {
                         v.setPressed(true);
@@ -500,5 +576,16 @@ public class ChatActivity extends AppCompatActivity {
             return true;
         else
             return false;
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showSoftInputView() {
+        if (getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (getCurrentFocus() != null)
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                        .showSoftInput(mEtText, 0);
+        }
     }
 }
