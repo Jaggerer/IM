@@ -20,8 +20,10 @@ public class Message {
     private long createTime;
 
     private int sendStatus;
-
+    //    录音情况下的录音长度
     private int recorderLength;
+    //    业务类型
+    private String remarkId;
 
 
     public String getFromId() {
@@ -86,5 +88,13 @@ public class Message {
 
     public void setRecorderLength(int recorderLength) {
         this.recorderLength = recorderLength;
+    }
+
+    public String getRemarkId() {
+        return remarkId;
+    }
+
+    public void setRemarkId(String remarkId) {
+        this.remarkId = remarkId;
     }
 }

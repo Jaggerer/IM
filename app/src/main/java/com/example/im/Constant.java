@@ -10,17 +10,22 @@ import java.io.File;
 
 public class Constant {
     //文本
-    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_TEXT = 5;
     public static final int TYPE_RECEIVER_TXT = 3;
     public static final int TYPE_SEND_TXT = 4;
     //图片
-    public static final int TYPE_PIC = 1;
+    public static final int TYPE_PIC = 10;
     public static final int TYPE_SEND_IMAGE = 5;
     public static final int TYPE_RECEIVER_IMAGE = 6;
     //语音
-    public static final int TYPE_VOICE = 2;
+    public static final int TYPE_VOICE = 20;
     public static final int TYPE_SEND_VOICE = 7;
     public static final int TYPE_RECEIVER_VOICE = 8;
+    //中间数据
+    public static final int TYPE_CONTENT = 50;
+    //结束数据
+    public static final int TYPE_ENDING = 100;
+
 //    //视频
 //    public static final int TYPE_SEND_VIDEO = 6;
 //    public static final int TYPE_RECEIVER_VIDEO = 7;
@@ -33,8 +38,6 @@ public class Constant {
 
     public static final int REQUEST_CAMERA = 28;
     public static final int REQUEST_MIC = 29;
-
-
 
 
 }

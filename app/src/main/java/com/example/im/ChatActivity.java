@@ -43,7 +43,10 @@ import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.PicassoAdapter;
 import com.sangcomz.fishbun.define.Define;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -411,6 +414,8 @@ public class ChatActivity extends AppCompatActivity {
         message.setSendStatus(Constant.SENDING);
         message.setRecorderLength(recordTime);
         adapter.addMessage(message);
+        File f = new File("123");
+
         new Thread(new Runnable() {
             @Override
             public void run() {
