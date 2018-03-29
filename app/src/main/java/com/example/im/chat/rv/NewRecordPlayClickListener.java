@@ -1,4 +1,4 @@
-package com.example.im.rv;
+package com.example.im.chat.rv;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
@@ -8,7 +8,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.im.Message;
+import com.example.im.chat.Message;
 import com.example.im.R;
 
 import java.io.File;

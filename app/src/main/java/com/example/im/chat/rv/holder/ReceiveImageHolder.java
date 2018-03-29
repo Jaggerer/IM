@@ -1,4 +1,4 @@
-package com.example.im.rv.holder;
+package com.example.im.chat.rv.holder;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.Message;
+import com.example.im.chat.Message;
 import com.example.im.R;
-import com.example.im.rv.OnRecyclerViewListener;
+import com.example.im.chat.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.assist.FailReason;

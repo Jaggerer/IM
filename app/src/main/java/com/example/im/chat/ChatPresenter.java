@@ -1,4 +1,4 @@
-package com.example.im;
+package com.example.im.chat;
 
 /**
  * Created by ganchenqing on 2018/3/21.

@@ -1,4 +1,4 @@
-package com.example.im.rv.holder;
+package com.example.im.chat.rv.holder;
 
 import android.content.Context;
 import android.view.View;
@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.Message;
+import com.example.im.chat.Message;
 import com.example.im.R;
-import com.example.im.rv.NewRecordPlayClickListener;
-import com.example.im.rv.OnRecyclerViewListener;
+import com.example.im.chat.rv.NewRecordPlayClickListener;
+import com.example.im.chat.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 

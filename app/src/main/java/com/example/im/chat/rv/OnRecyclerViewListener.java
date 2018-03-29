@@ -1,4 +1,4 @@
-package com.example.im.rv;
+package com.example.im.chat.rv;
 
 /**
  * Created by ganchenqing on 2018/3/19.

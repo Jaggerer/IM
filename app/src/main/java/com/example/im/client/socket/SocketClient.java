@@ -1,14 +1,12 @@
 package com.example.im.client.socket;
 
 import com.example.im.Constant;
-import com.example.im.Message;
+import com.example.im.chat.Message;
 import com.example.im.utils.BitcoinOutput;
 import com.example.im.utils.ByteUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -111,15 +109,17 @@ public class SocketClient {
     }
 
     private void connect() {
-        //需要在子线程下进行链接
-        MyConnectRunnable connect = new MyConnectRunnable();
-        new Thread(connect).start();
+        if (!mIsInit) {
+            //需要在子线程下进行链接
+            new Thread(new MyConnectRunnable()).start();
+            new Thread(new SendMsgRunnable()).start();
+        }
     }
 
     /**
      * 发送数据
      */
-    public void sendMsg() {
+    private void sendMsg() {
         if (!mIsInit) {
             return;
         }
@@ -147,8 +147,8 @@ public class SocketClient {
                         //内容长度
                         int contentLen = content.getBytes().length;
                         //包长
-                        //todo 需不需要加上自身的short
-                        packageLen = (short) (remarkLen + msgType + userIdLen + contentLen + 1 + 1);
+                        //todo byte携程长亮
+                        packageLen = (short) (remarkLen +userIdLen + contentLen + 1 + 1 +1);
 
                         sendPackage = new BitcoinOutput().writeShort(packageLen)
                                 .writeByte(msgType)
@@ -163,6 +163,7 @@ public class SocketClient {
                     case Constant.TYPE_PIC:
                     case Constant.TYPE_VOICE:
                         //先组装一个包，告诉服务器发送什么类型
+                        //todo byte携程长亮
                         packageLen = (short) (remarkLen + msgType + userIdLen + 1 + 1);
                         sendPackage = new BitcoinOutput().writeShort(packageLen)
                                 .writeByte(msgType)
@@ -252,12 +253,6 @@ public class SocketClient {
         connect();
     }
 
-
-    /**
-     * 每次读完数据后,需要重新注册selector读取数据
-     *
-     * @return
-     */
     private synchronized boolean repareRead() {
         boolean bRes = false;
         try {
@@ -306,39 +301,42 @@ public class SocketClient {
                             ByteArrayOutputStream read = new ByteArrayOutputStream();
                             int nRead = 0;
                             int nLen = 0;
-                            //单个读取流
-                            byte[] bytes;
-                            //读完为止
-                            while ((nRead = sc.read(readBuffer)) > 0) {
-                                //整理
-                                readBuffer.flip();
-                                bytes = new byte[nRead];
-                                nLen += nRead;
-                                //将读取的数据拷贝到字节流中
-                                readBuffer.get(bytes);
-                                //将字节流添加到实际读取流中
-                                read.write(bytes);
-                                /////////////////////////////////////
-                                //@ 需要增加一个解析器,对数据流进行解析
 
-                                /////////////////////////////////////
+                            //todo 根据协议来确定读数据的规则
+//                            //单个读取流
+//                            byte[] bytes;
+//                            //读完为止
+//                            while ((nRead = sc.read(readBuffer)) > 0) {
+//                                //整理
+//                                readBuffer.flip();
+//                                bytes = new byte[nRead];
+//                                nLen += nRead;
+//                                //将读取的数据拷贝到字节流中
+//                                readBuffer.get(bytes);
+//                                //将字节流添加到实际读取流中
+//                                read.write(bytes);
+//                                /////////////////////////////////////
+//                                //@ 需要增加一个解析器,对数据流进行解析
+//
+//                                /////////////////////////////////////
+//
+//                                readBuffer.clear();
+//                            }
 
-                                readBuffer.clear();
-                            }
-                            if (nLen > 0) {
-                                if (mEventListener != null) {
-                                    mEventListener.recvMsg(read);
-                                } else {
-                                    String info = new String(read.toString(BUFF_FORMAT));
-                                    System.out.println("rev:" + info);
-                                }
-                            }
+//                            if (nLen > 0) {
+//                                if (mEventListener != null) {
+//                                    mEventListener.recvMsg(read);
+//                                } else {
+//                                    String info = new String(read.toString(BUFF_FORMAT));
+//                                    System.out.println("rev:" + info);
+//                                }
+//                            }
 
                             //为下一次读取做准备
                             sk.interestOps(SelectionKey.OP_READ);
                         }
-
-                        //删除此SelectionKey
+//
+//                        //删除此SelectionKey
                         mSelector.selectedKeys().remove(sk);
                     }
                 }
@@ -350,20 +348,9 @@ public class SocketClient {
     }
 
     public interface SocketClientEventListener {
-        /**
-         * 多线程下接收到数据
-         *
-         * @param read
-         * @return
-         */
         void recvMsg(ByteArrayOutputStream read);
     }
 
-    /**
-     * 链接线程
-     *
-     * @author HeZhongqiu
-     */
     private class MyConnectRunnable implements Runnable {
 
         @Override
@@ -396,6 +383,17 @@ public class SocketClient {
         }
     }
 
+    /**
+     * 对外暴露的发送消息方法
+     */
+    public void sendMessage(Message message) {
+        try {
+            mMessageQueue.put(message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private class SendMsgRunnable implements Runnable {
 
         @Override
@@ -405,7 +403,6 @@ public class SocketClient {
     }
 
     private class RevMsgRunnable implements Runnable {
-
         @Override
         public void run() {
             revMsg();

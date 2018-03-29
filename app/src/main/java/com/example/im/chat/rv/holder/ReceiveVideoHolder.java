@@ -1,4 +1,4 @@
-package com.example.im.rv.holder;
+package com.example.im.chat.rv.holder;
 
 import android.content.Context;
 import android.view.View;
@@ -6,44 +6,39 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.im.Message;
+import com.example.im.chat.Message;
 import com.example.im.R;
-import com.example.im.rv.OnRecyclerViewListener;
+import com.example.im.chat.rv.OnRecyclerViewListener;
 import com.example.im.utils.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
+public class ReceiveVideoHolder extends BaseViewHolder<Message> {
 
-/**
- * 接收到的文本类型
- */
-public class ReceiveTextHolder extends BaseViewHolder<Message> {
+    ImageView mIvAvatar;
 
-    private ImageView mIvAvatar;
+    TextView mTvTime;
 
-    private TextView mTvTime;
+    TextView mTvMessage;
 
-    private TextView mTvMessage;
+    Message message;
 
-    private Message message;
-
-    public ReceiveTextHolder(Context context, ViewGroup root, OnRecyclerViewListener onRecyclerViewListener) {
+    public ReceiveVideoHolder(Context context, ViewGroup root, OnRecyclerViewListener onRecyclerViewListener) {
         super(context, root, R.layout.item_chat_received_message, onRecyclerViewListener);
     }
 
 
     @Override
-    public void bindData(Message m) {
+    public void bindData(Message o) {
         initView();
-        message = m;
+        message = o;
         String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
         mTvTime.setText(time);
 
-        //        todo 拿当前发送消息的用户头像
         String avatar = getAvatarFromServer(message.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
 
         String content = message.getContent();
-        mTvMessage.setText(content);
+        mTvMessage.setText("接收到的视频文件：" + content);
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +46,7 @@ public class ReceiveTextHolder extends BaseViewHolder<Message> {
                 toast("点击" + message.getFromId() + "的头像");
             }
         });
+
         mTvMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,18 +68,19 @@ public class ReceiveTextHolder extends BaseViewHolder<Message> {
         });
     }
 
-    private String getAvatarFromServer(String id) {
-        return null;
+    private void initView() {
+        mTvMessage = itemView.findViewById(R.id.tv_message);
+        mIvAvatar = itemView.findViewById(R.id.iv_avatar);
+        mTvTime = itemView.findViewById(R.id.tv_time);
     }
 
     public void showTime(boolean isShow) {
         mTvTime.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
-
-    private void initView() {
-        mTvMessage = itemView.findViewById(R.id.tv_message);
-        mIvAvatar = itemView.findViewById(R.id.iv_avatar);
-        mTvTime = itemView.findViewById(R.id.tv_time);
+    private String getAvatarFromServer(String id) {
+        return null;
     }
+
+
 }

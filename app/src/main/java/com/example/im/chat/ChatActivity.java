@@ -1,4 +1,4 @@
-package com.example.im;
+package com.example.im.chat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -37,16 +37,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.im.Constant;
+import com.example.im.R;
+import com.example.im.event.AddMessageEvent;
 import com.example.im.voice.OnRecordChangeListener;
 import com.example.im.voice.RecordManager;
 import com.sangcomz.fishbun.FishBun;
 import com.sangcomz.fishbun.adapter.image.impl.PicassoAdapter;
 import com.sangcomz.fishbun.define.Define;
 
-import java.io.DataOutputStream;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +101,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_chat);
+        EventBus.getDefault().register(this);
         initView();
         messageList.addAll(getMessageListFromServer());
 
@@ -105,6 +110,12 @@ public class ChatActivity extends AppCompatActivity {
         initBottomView();
         initVoiceView();
         initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     private void initListener() {
@@ -343,18 +354,20 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, 0);
     }
 
+    //todo从服务器拿聊天记录
     public List<Message> getMessageListFromServer() {
         List<Message> serverList = new ArrayList<>();
         Message message = new Message();
         message.setContent("接受文字");
         message.setMessageType(Constant.TYPE_TEXT);
         message.setCreateTime(System.currentTimeMillis());
-        message.setFromId("2");
-        message.setToId("1");
+        message.setFromId(Constant.OTHER_USERID);
+        message.setToId(Constant.CURRENT_USERID);
         serverList.add(message);
         return serverList;
     }
 
+    //todo 发送消息
     private void sendMessage() {
         String text = mEtText.getText().toString();
         if (TextUtils.isEmpty(text.trim())) {
@@ -362,8 +375,8 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
         Message message = new Message();
-        message.setToId("2");
-        message.setFromId("1");
+        message.setToId(Constant.OTHER_USERID);
+        message.setFromId(Constant.CURRENT_USERID);
         message.setCreateTime(System.currentTimeMillis());
         message.setContent(text);
         message.setMessageType(Constant.TYPE_TEXT);
@@ -372,12 +385,13 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    //todo 发送图片
     private void sendPicture(Uri uri) {
         final Message message = new Message();
         message.setMessageType(Constant.TYPE_PIC);
         message.setCreateTime(System.currentTimeMillis());
-        message.setFromId("1");
-        message.setToId("2");
+        message.setFromId(Constant.CURRENT_USERID);
+        message.setToId(Constant.OTHER_USERID);
         message.setFileDir(uri.toString());
         message.setSendStatus(Constant.SENDING);
         adapter.addMessage(message);
@@ -408,8 +422,8 @@ public class ChatActivity extends AppCompatActivity {
         final Message message = new Message();
         message.setMessageType(Constant.TYPE_VOICE);
         message.setCreateTime(System.currentTimeMillis());
-        message.setFromId("1");
-        message.setToId("2");
+        message.setFromId(Constant.CURRENT_USERID);
+        message.setToId(Constant.OTHER_USERID);
         message.setFileDir(localPath);
         message.setSendStatus(Constant.SENDING);
         message.setRecorderLength(recordTime);
@@ -618,5 +632,10 @@ public class ChatActivity extends AppCompatActivity {
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                         .showSoftInput(mEtText, 0);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(AddMessageEvent event) {
+        adapter.addMessage(event.getMessage());
     }
 }

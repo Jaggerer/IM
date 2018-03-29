@@ -1,17 +1,18 @@
-package com.example.im;
+package com.example.im.chat;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.example.im.rv.holder.BaseViewHolder;
-import com.example.im.rv.OnRecyclerViewListener;
-import com.example.im.rv.holder.ReceiveImageHolder;
-import com.example.im.rv.holder.ReceiveTextHolder;
-import com.example.im.rv.holder.ReceiveVoiceHolder;
-import com.example.im.rv.holder.SendImageHolder;
-import com.example.im.rv.holder.SendTextHolder;
-import com.example.im.rv.holder.SendVoiceHolder;
+import com.example.im.Constant;
+import com.example.im.chat.rv.holder.BaseViewHolder;
+import com.example.im.chat.rv.OnRecyclerViewListener;
+import com.example.im.chat.rv.holder.ReceiveImageHolder;
+import com.example.im.chat.rv.holder.ReceiveTextHolder;
+import com.example.im.chat.rv.holder.ReceiveVoiceHolder;
+import com.example.im.chat.rv.holder.SendImageHolder;
+import com.example.im.chat.rv.holder.SendTextHolder;
+import com.example.im.chat.rv.holder.SendVoiceHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,7 +149,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public String getCurrentUid() {
-        return "1";
+        return Constant.CURRENT_USERID;
     }
 
     private OnRecyclerViewListener onRecyclerViewListener;

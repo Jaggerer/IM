@@ -40,4 +40,10 @@ public class Constant {
     public static final int REQUEST_MIC = 29;
 
 
+    //当前用户的ID
+    public static final String CURRENT_USERID = "1";
+    //发送消息用户的ID
+    public static final String OTHER_USERID = "2";
+
+
 }
