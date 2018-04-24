@@ -1,4 +1,4 @@
-package com.example.im.utils;
+package com.example.im.utils.imageloaderutil;
 
 import android.widget.ImageView;
 
@@ -8,14 +8,18 @@ public interface ILoader {
 
     /**
      * 加载圆形头像
+     *
      * @param iv
      * @param url
      * @param defaultRes
      */
     void loadAvator(ImageView iv, String url, int defaultRes);
 
+    void loadAvatorFromLocal(ImageView iv, String url, int defaultRes);
+
     /**
      * 加载图片，添加监听器
+     *
      * @param iv
      * @param url
      * @param defaultRes

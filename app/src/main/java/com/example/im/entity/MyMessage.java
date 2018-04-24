@@ -1,10 +1,10 @@
-package com.example.im.chat;
+package com.example.im.entity;
 
 /**
  * Created by ganchenqing on 2018/3/19.
  */
 
-public class Message {
+public class MyMessage {
     public static final int TYPE_STRING = 0;
     public static final int TYPE_PIC = 1;
     public static final int TYPE_VOICE = 2;
@@ -12,16 +12,18 @@ public class Message {
 
     private String fromId;
     private String toId;
-
-    private int messageType;
     private String content;
+    private int messageType;
+
     private String fileDir;
 
     private long createTime;
 
     private int sendStatus;
+
     //    录音情况下的录音长度
     private int recorderLength;
+
     //    业务类型
     private String remarkId;
 

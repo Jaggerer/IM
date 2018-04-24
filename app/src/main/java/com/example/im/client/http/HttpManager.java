@@ -5,4 +5,5 @@ package com.example.im.client.http;
  */
 
 public class HttpManager {
+
 }

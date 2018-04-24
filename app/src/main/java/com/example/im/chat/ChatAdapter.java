@@ -13,6 +13,7 @@ import com.example.im.chat.rv.holder.ReceiveVoiceHolder;
 import com.example.im.chat.rv.holder.SendImageHolder;
 import com.example.im.chat.rv.holder.SendTextHolder;
 import com.example.im.chat.rv.holder.SendVoiceHolder;
+import com.example.im.entity.MyMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ import static com.example.im.Constant.TYPE_SEND_VOICE;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Message> mList = new ArrayList<>();
+    private List<MyMessage> mList = new ArrayList<>();
     private Context mContext;
     private String currentUid = "";
 
@@ -41,18 +42,18 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final long TIME_INTERVAL = 10 * 60 * 1000;
 
 
-    public ChatAdapter(Context context, List<Message> list) {
+    public ChatAdapter(Context context, List<MyMessage> list) {
         this.mList = list;
         this.mContext = context;
         //todo 从服务器获得当前用户的uid
         currentUid = getCurrentUid();
     }
 
-    public int findPosition(Message message) {
+    public int findPosition(MyMessage myMessage) {
         int index = this.getCount();
         int position = -1;
         while (index-- > 0) {
-            if (message.equals(this.getItem(index))) {
+            if (myMessage.equals(this.getItem(index))) {
                 position = index;
                 break;
             }
@@ -60,7 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return position;
     }
 
-    public Message getItem(int position) {
+    public MyMessage getItem(int position) {
         return this.mList == null ? null : (position >= this.mList.size() ? null : this.mList.get(position));
     }
 
@@ -73,7 +74,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public Message getFirstMessage() {
+    public MyMessage getFirstMessage() {
         if (null != mList && mList.size() > 0) {
             return mList.get(0);
         } else {
@@ -81,13 +82,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void addMessages(List<Message> messages) {
-        mList.addAll(0, messages);
+    public void addMessages(List<MyMessage> myMessages) {
+        mList.addAll(0, myMessages);
         notifyDataSetChanged();
     }
 
-    public void addMessage(Message message) {
-        mList.addAll(Arrays.asList(message));
+    public void addMessage(MyMessage myMessage) {
+        mList.addAll(Arrays.asList(myMessage));
         notifyDataSetChanged();
     }
 
@@ -136,13 +137,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        Message message = mList.get(position);
-        if (message.getMessageType() == Constant.TYPE_PIC) {
-            return message.getFromId().equals(currentUid) ? TYPE_SEND_IMAGE : TYPE_RECEIVER_IMAGE;
-        } else if (message.getMessageType() == Constant.TYPE_VOICE) {
-            return message.getFromId().equals(currentUid) ? TYPE_SEND_VOICE : TYPE_RECEIVER_VOICE;
-        } else if (message.getMessageType() == Constant.TYPE_TEXT) {
-            return message.getFromId().equals(currentUid) ? TYPE_SEND_TXT : TYPE_RECEIVER_TXT;
+        MyMessage myMessage = mList.get(position);
+        if (myMessage.getMessageType() == Constant.TYPE_PIC) {
+            return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_IMAGE : TYPE_RECEIVER_IMAGE;
+        } else if (myMessage.getMessageType() == Constant.TYPE_VOICE) {
+            return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_VOICE : TYPE_RECEIVER_VOICE;
+        } else if (myMessage.getMessageType() == Constant.TYPE_TEXT) {
+            return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_TXT : TYPE_RECEIVER_TXT;
         } else {
             return -1;
         }

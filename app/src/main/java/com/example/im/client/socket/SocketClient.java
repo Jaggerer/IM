@@ -1,7 +1,7 @@
 package com.example.im.client.socket;
 
 import com.example.im.Constant;
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.utils.BitcoinOutput;
 import com.example.im.utils.ByteUtils;
 
@@ -70,7 +70,7 @@ public class SocketClient {
      */
     public static final String BUFF_FORMAT = "utf-8";
 
-    public static BlockingQueue<Message> mMessageQueue = new LinkedBlockingQueue<>();
+    public static BlockingQueue<MyMessage> mMyMessageQueue = new LinkedBlockingQueue<>();
 
     public static synchronized SocketClient instance() {
         if (gTcp == null) {
@@ -125,9 +125,9 @@ public class SocketClient {
         }
         while (mIsInit) {
             try {
-                Message message = mMessageQueue.take();
+                MyMessage myMessage = mMyMessageQueue.take();
                 //消息类型
-                byte msgType = (byte) message.getMessageType();
+                byte msgType = (byte) myMessage.getMessageType();
                 //用户ID
                 String userId = "userId";
                 //用户ID长度
@@ -139,7 +139,7 @@ public class SocketClient {
                 short packageLen = 0;
                 byte[] sendPackage;
 
-                switch (message.getMessageType()) {
+                switch (myMessage.getMessageType()) {
 //                    文字消息一个包直接发过去
                     case Constant.TYPE_TEXT:
                         // 内容
@@ -176,7 +176,7 @@ public class SocketClient {
 
                         //todo 如何添加监听
                         //发送一个包，直接传输文件
-                        File sendFile = new File(message.getFileDir());
+                        File sendFile = new File(myMessage.getFileDir());
                         byte[] fileByte = ByteUtils.InputStream2ByteArray(sendFile);
 
                         //把消息类型设置为传输内容
@@ -299,8 +299,6 @@ public class SocketClient {
                             ByteBuffer readBuffer = ByteBuffer.allocate(READ_BUFF_SIZE);
                             //实际的读取流
                             ByteArrayOutputStream read = new ByteArrayOutputStream();
-                            int nRead = 0;
-                            int nLen = 0;
 
                             //todo 根据协议来确定读数据的规则
 //                            //单个读取流
@@ -386,9 +384,9 @@ public class SocketClient {
     /**
      * 对外暴露的发送消息方法
      */
-    public void sendMessage(Message message) {
+    public void sendMessage(MyMessage myMessage) {
         try {
-            mMessageQueue.put(message);
+            mMyMessageQueue.put(myMessage);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

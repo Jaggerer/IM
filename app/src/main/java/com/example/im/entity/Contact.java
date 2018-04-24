@@ -1,4 +1,4 @@
-package com.example.im.home;
+package com.example.im.entity;
 
 /**
  * Created by ganchenqing on 2018/3/29.

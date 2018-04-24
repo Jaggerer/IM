@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.OnRecyclerViewListener;
-import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
 
@@ -27,7 +27,7 @@ public class SendVideoHolder extends BaseViewHolder implements View.OnClickListe
 
     private ProgressBar mPbLoad;
 
-    Message message;
+    MyMessage myMessage;
 
     public SendVideoHolder(Context context, ViewGroup root, OnRecyclerViewListener listener) {
         super(context, root, R.layout.item_chat_sent_message, listener);
@@ -36,16 +36,16 @@ public class SendVideoHolder extends BaseViewHolder implements View.OnClickListe
     @Override
     public void bindData(Object o) {
         initView();
-        String avatar = getAvatarFromServer(message.getFromId());
+        String avatar = getAvatarFromServer(myMessage.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
 
-        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
 
-        String content = message.getContent();
+        String content = myMessage.getContent();
         mTvMessage.setText("发送的视频文件：" + content);
         mTvTime.setText(time);
 
-        int status = message.getSendStatus();
+        int status = myMessage.getSendStatus();
 
         mIvFailResend.setVisibility(View.GONE);
         mPbLoad.setVisibility(View.GONE);
@@ -63,7 +63,7 @@ public class SendVideoHolder extends BaseViewHolder implements View.OnClickListe
         mTvMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getContent());
+                toast("点击" + myMessage.getContent());
                 if (onRecyclerViewListener != null) {
                     onRecyclerViewListener.onItemClick(getAdapterPosition());
                 }
@@ -83,7 +83,7 @@ public class SendVideoHolder extends BaseViewHolder implements View.OnClickListe
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getFromId() + "的头像");
+                toast("点击" + myMessage.getFromId() + "的头像");
             }
         });
 

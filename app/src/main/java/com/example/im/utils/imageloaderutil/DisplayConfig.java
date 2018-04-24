@@ -1,4 +1,4 @@
-package com.example.im.utils;
+package com.example.im.utils.imageloaderutil;
 
 import android.graphics.Bitmap;
 

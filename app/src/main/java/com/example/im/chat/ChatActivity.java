@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.im.Constant;
 import com.example.im.R;
+import com.example.im.entity.MyMessage;
 import com.example.im.event.AddMessageEvent;
 import com.example.im.voice.OnRecordChangeListener;
 import com.example.im.voice.RecordManager;
@@ -94,7 +95,7 @@ public class ChatActivity extends AppCompatActivity {
 
     RecordManager mRecordManager;
 
-    private List<Message> messageList = new ArrayList<>();
+    private List<MyMessage> myMessageList = new ArrayList<>();
 
     File picFile;
 
@@ -104,7 +105,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         EventBus.getDefault().register(this);
         initView();
-        messageList.addAll(getMessageListFromServer());
+        myMessageList.addAll(getMessageListFromServer());
 
         initAdapter();
         initBottomView();
@@ -285,7 +286,7 @@ public class ChatActivity extends AppCompatActivity {
     private void initAdapter() {
         layoutManager = new LinearLayoutManager(this);
         mRvChat.setLayoutManager(layoutManager);
-        adapter = new ChatAdapter(this, messageList);
+        adapter = new ChatAdapter(this, myMessageList);
         mRvChat.setAdapter(adapter);
 
     }
@@ -355,15 +356,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     //todo从服务器拿聊天记录
-    public List<Message> getMessageListFromServer() {
-        List<Message> serverList = new ArrayList<>();
-        Message message = new Message();
-        message.setContent("接受文字");
-        message.setMessageType(Constant.TYPE_TEXT);
-        message.setCreateTime(System.currentTimeMillis());
-        message.setFromId(Constant.OTHER_USERID);
-        message.setToId(Constant.CURRENT_USERID);
-        serverList.add(message);
+    public List<MyMessage> getMessageListFromServer() {
+        List<MyMessage> serverList = new ArrayList<>();
+        MyMessage myMessage = new MyMessage();
+        myMessage.setContent("接受文字");
+        myMessage.setMessageType(Constant.TYPE_TEXT);
+        myMessage.setCreateTime(System.currentTimeMillis());
+        myMessage.setFromId(Constant.OTHER_USERID);
+        myMessage.setToId(Constant.CURRENT_USERID);
+        serverList.add(myMessage);
         return serverList;
     }
 
@@ -374,33 +375,33 @@ public class ChatActivity extends AppCompatActivity {
             toast("请输入内容");
             return;
         }
-        Message message = new Message();
-        message.setToId(Constant.OTHER_USERID);
-        message.setFromId(Constant.CURRENT_USERID);
-        message.setCreateTime(System.currentTimeMillis());
-        message.setContent(text);
-        message.setMessageType(Constant.TYPE_TEXT);
-        adapter.addMessage(message);
+        MyMessage myMessage = new MyMessage();
+        myMessage.setToId(Constant.OTHER_USERID);
+        myMessage.setFromId(Constant.CURRENT_USERID);
+        myMessage.setCreateTime(System.currentTimeMillis());
+        myMessage.setContent(text);
+        myMessage.setMessageType(Constant.TYPE_TEXT);
+        adapter.addMessage(myMessage);
         mEtText.setText("");
 
     }
 
     //todo 发送图片
     private void sendPicture(Uri uri) {
-        final Message message = new Message();
-        message.setMessageType(Constant.TYPE_PIC);
-        message.setCreateTime(System.currentTimeMillis());
-        message.setFromId(Constant.CURRENT_USERID);
-        message.setToId(Constant.OTHER_USERID);
-        message.setFileDir(uri.toString());
-        message.setSendStatus(Constant.SENDING);
-        adapter.addMessage(message);
+        final MyMessage myMessage = new MyMessage();
+        myMessage.setMessageType(Constant.TYPE_PIC);
+        myMessage.setCreateTime(System.currentTimeMillis());
+        myMessage.setFromId(Constant.CURRENT_USERID);
+        myMessage.setToId(Constant.OTHER_USERID);
+        myMessage.setFileDir(uri.toString());
+        myMessage.setSendStatus(Constant.SENDING);
+        adapter.addMessage(myMessage);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(2000);
-                    message.setSendStatus(Constant.SEND_SUC);
+                    myMessage.setSendStatus(Constant.SEND_SUC);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -419,15 +420,15 @@ public class ChatActivity extends AppCompatActivity {
 
     //todo 发送声音
     public void sendVoiceMessage(String localPath, int recordTime) {
-        final Message message = new Message();
-        message.setMessageType(Constant.TYPE_VOICE);
-        message.setCreateTime(System.currentTimeMillis());
-        message.setFromId(Constant.CURRENT_USERID);
-        message.setToId(Constant.OTHER_USERID);
-        message.setFileDir(localPath);
-        message.setSendStatus(Constant.SENDING);
-        message.setRecorderLength(recordTime);
-        adapter.addMessage(message);
+        final MyMessage myMessage = new MyMessage();
+        myMessage.setMessageType(Constant.TYPE_VOICE);
+        myMessage.setCreateTime(System.currentTimeMillis());
+        myMessage.setFromId(Constant.CURRENT_USERID);
+        myMessage.setToId(Constant.OTHER_USERID);
+        myMessage.setFileDir(localPath);
+        myMessage.setSendStatus(Constant.SENDING);
+        myMessage.setRecorderLength(recordTime);
+        adapter.addMessage(myMessage);
         File f = new File("123");
 
         new Thread(new Runnable() {
@@ -435,7 +436,7 @@ public class ChatActivity extends AppCompatActivity {
             public void run() {
                 try {
                     Thread.sleep(2000);
-                    message.setSendStatus(Constant.SEND_SUC);
+                    myMessage.setSendStatus(Constant.SEND_SUC);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -636,6 +637,6 @@ public class ChatActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(AddMessageEvent event) {
-        adapter.addMessage(event.getMessage());
+        adapter.addMessage(event.getMyMessage());
     }
 }

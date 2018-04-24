@@ -8,7 +8,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 
 public class NewRecordPlayClickListener implements View.OnClickListener {
 
-    Message message;
+    MyMessage myMessage;
     ImageView mIvVoice;
     private AnimationDrawable anim = null;
     Context mContext;
@@ -25,11 +25,11 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
     MediaPlayer mediaPlayer = null;
     public static boolean isPlaying = false;
     public static NewRecordPlayClickListener currentPlayListener = null;
-    static Message currentMsg = null;
+    static MyMessage currentMsg = null;
 
-    public NewRecordPlayClickListener(Context context, Message msg, ImageView voice) {
+    public NewRecordPlayClickListener(Context context, MyMessage msg, ImageView voice) {
         this.mIvVoice = voice;
-        this.message = msg;
+        this.myMessage = msg;
         this.mContext = context.getApplicationContext();
         currentMsg = msg;
         currentPlayListener = this;
@@ -67,7 +67,7 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
                 @Override
                 public void onPrepared(MediaPlayer arg0) {
                     isPlaying = true;
-                    currentMsg = message;
+                    currentMsg = myMessage;
                     arg0.start();
                     startRecordAnimation();
                 }
@@ -97,7 +97,7 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
     }
 
     private void startRecordAnimation() {
-        if (message.getFromId().equals(currentObjectId)) {
+        if (myMessage.getFromId().equals(currentObjectId)) {
             mIvVoice.setImageResource(R.drawable.anim_chat_voice_right);
         } else {
             mIvVoice.setImageResource(R.drawable.anim_chat_voice_left);
@@ -107,7 +107,7 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
     }
 
     private void stopRecordAnimation() {
-        if (message.getFromId().equals(currentObjectId)) {
+        if (myMessage.getFromId().equals(currentObjectId)) {
             mIvVoice.setImageResource(R.mipmap.voice_left3);
         } else {
             mIvVoice.setImageResource(R.mipmap.voice_right3);
@@ -122,17 +122,17 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
         if (isPlaying) {
             currentPlayListener.stopPlayRecord();
             if (currentMsg != null
-                    && currentMsg.hashCode() == message.hashCode()) {
+                    && currentMsg.hashCode() == myMessage.hashCode()) {
                 currentMsg = null;
                 return;
             }
         }
-        if (message.getFromId().equals(currentObjectId)) {// 如果是自己发送的语音消息，则播放本地地址
+        if (myMessage.getFromId().equals(currentObjectId)) {// 如果是自己发送的语音消息，则播放本地地址
             //todo 获得文件地址
-            String localPath = message.getFileDir();
+            String localPath = myMessage.getFileDir();
             startPlayRecord(localPath, true);
         } else {// 如果是收到的消息，则需要先下载后播放
-            String localPath = downloadVoice(message.getFileDir());
+            String localPath = downloadVoice(myMessage.getFileDir());
             startPlayRecord(localPath, true);
         }
     }

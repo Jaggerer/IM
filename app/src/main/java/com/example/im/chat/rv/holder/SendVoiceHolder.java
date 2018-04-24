@@ -7,11 +7,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.NewRecordPlayClickListener;
 import com.example.im.chat.rv.OnRecyclerViewListener;
-import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
 import static com.example.im.Constant.SENDING;
@@ -20,7 +20,7 @@ import static com.example.im.Constant.SEND_FAILED;
 /**
  * 发送的语音类型
  */
-public class SendVoiceHolder extends BaseViewHolder<Message> {
+public class SendVoiceHolder extends BaseViewHolder<MyMessage> {
 
     private ImageView mIvAvatar;
 
@@ -35,28 +35,28 @@ public class SendVoiceHolder extends BaseViewHolder<Message> {
 
     private ProgressBar mPbProgressLoad;
 
-    private Message message;
+    private MyMessage myMessage;
 
     public SendVoiceHolder(Context context, ViewGroup root, OnRecyclerViewListener onRecyclerViewListener) {
         super(context, root, R.layout.item_chat_sent_voice, onRecyclerViewListener);
     }
 
     @Override
-    public void bindData(Message m) {
+    public void bindData(MyMessage m) {
         initView();
-        message = m;
+        myMessage = m;
 
         String avatar = getAvatarFromServer(m.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
 
-        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
         mTvtime.setText(time);
 
 //获得语音长度
-        int length = message.getRecorderLength();
+        int length = myMessage.getRecorderLength();
         mTvVoiceLength.setText(String.valueOf(length));
 
-        int status = message.getSendStatus();
+        int status = myMessage.getSendStatus();
         if (status == SEND_FAILED) {
             mIvFailresend.setVisibility(View.VISIBLE);
             mPbProgressLoad.setVisibility(View.GONE);
@@ -74,7 +74,7 @@ public class SendVoiceHolder extends BaseViewHolder<Message> {
             mTvVoiceLength.setVisibility(View.VISIBLE);
         }
 
-        mIvVoice.setOnClickListener(new NewRecordPlayClickListener(getContext(), message, mIvVoice));
+        mIvVoice.setOnClickListener(new NewRecordPlayClickListener(getContext(), myMessage, mIvVoice));
 
         mIvVoice.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class SendVoiceHolder extends BaseViewHolder<Message> {
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getFromId() + "的头像");
+                toast("点击" + myMessage.getFromId() + "的头像");
             }
         });
         //todo 重发

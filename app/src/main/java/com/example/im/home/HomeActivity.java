@@ -1,12 +1,13 @@
 package com.example.im.home;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.im.Constant;
 import com.example.im.R;
+import com.example.im.entity.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,4 +41,5 @@ public class HomeActivity extends AppCompatActivity {
         list.add(contact);
         return list;
     }
+
 }

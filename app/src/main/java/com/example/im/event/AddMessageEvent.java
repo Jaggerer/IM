@@ -1,19 +1,19 @@
 package com.example.im.event;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 
 /**
  * Created by ganchenqing on 2018/3/28.
  */
 
 public class AddMessageEvent {
-    private Message message;
+    private MyMessage myMessage;
 
-    public AddMessageEvent(Message message) {
-        this.message = message;
+    public AddMessageEvent(MyMessage myMessage) {
+        this.myMessage = myMessage;
     }
 
-    public Message getMessage() {
-        return message;
+    public MyMessage getMyMessage() {
+        return myMessage;
     }
 }

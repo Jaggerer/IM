@@ -2,7 +2,7 @@ package com.example.im;
 
 import android.app.Application;
 
-import com.example.im.utils.UniversalImageLoader;
+import com.example.im.utils.imageloaderutil.UniversalImageLoader;
 
 /**
  * Created by ganchenqing on 2018/3/21.

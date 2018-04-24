@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.OnRecyclerViewListener;
-import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
 import static com.example.im.Constant.SENDING;
@@ -19,7 +19,7 @@ import static com.example.im.Constant.SEND_FAILED;
 /**
  * 发送的文本类型
  */
-public class SendImageHolder extends BaseViewHolder<Message> {
+public class SendImageHolder extends BaseViewHolder<MyMessage> {
 
     private ImageView mIvAvatar;
 
@@ -38,15 +38,15 @@ public class SendImageHolder extends BaseViewHolder<Message> {
     }
 
     @Override
-    public void bindData(Message o) {
+    public void bindData(MyMessage o) {
         initView();
-        final Message message = o;
-        String avatar = getAvatarFromServer(message.getFromId());
+        final MyMessage myMessage = o;
+        String avatar = getAvatarFromServer(myMessage.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
-        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
         mTvTime.setText(time);
         //
-        int status = message.getSendStatus();
+        int status = myMessage.getSendStatus();
 
         if (status == SEND_FAILED) {
             mIvFailResend.setVisibility(View.VISIBLE);
@@ -63,12 +63,12 @@ public class SendImageHolder extends BaseViewHolder<Message> {
             mPbLoad.setVisibility(View.GONE);
         }
 
-        ImageLoaderFactory.getLoader().load(mIvPicture, message.getFileDir(), R.mipmap.ic_launcher, null);
+        ImageLoaderFactory.getLoader().load(mIvPicture, myMessage.getFileDir(), R.mipmap.ic_launcher, null);
 
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getFromId() + "的头像");
+                toast("点击" + myMessage.getFromId() + "的头像");
             }
         });
         mIvPicture.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class SendImageHolder extends BaseViewHolder<Message> {
         mIvFailResend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                c.resendMessage(message, new MessageSendListener() {
+//                c.resendMessage(myMessage, new MessageSendListener() {
 //                    @Override
 //                    public void onStart(BmobIMMessage msg) {
 //                        mPbLoad.setVisibility(View.VISIBLE);

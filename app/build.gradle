@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.im"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
@@ -27,9 +29,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'org.objenesis:objenesis:2.1'
+    compile 'com.dyuproject.protostuff:protostuff-core:1.0.8'
+    compile 'com.dyuproject.protostuff:protostuff-runtime:1.0.8'
     implementation files('libs/universal-image-loader-1.9.5.jar')
-
     implementation 'com.sangcomz:FishBun:0.8.6'
-
     implementation 'com.squareup.picasso:picasso:2.5.2'
 }

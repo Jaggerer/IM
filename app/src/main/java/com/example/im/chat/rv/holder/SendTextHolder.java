@@ -7,16 +7,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.OnRecyclerViewListener;
-import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 
 /**
  * 发送的文本类型
  */
-public class SendTextHolder extends BaseViewHolder<Message> implements View.OnClickListener, View.OnLongClickListener {
+public class SendTextHolder extends BaseViewHolder<MyMessage> implements View.OnClickListener, View.OnLongClickListener {
 
     private ImageView mIvAvatar;
 
@@ -29,7 +29,7 @@ public class SendTextHolder extends BaseViewHolder<Message> implements View.OnCl
 
     private ProgressBar mPbLoad;
 
-    private Message message;
+    private MyMessage myMessage;
 
 
     public SendTextHolder(Context context, ViewGroup root, OnRecyclerViewListener listener) {
@@ -37,19 +37,19 @@ public class SendTextHolder extends BaseViewHolder<Message> implements View.OnCl
     }
 
     @Override
-    public void bindData(Message msg) {
+    public void bindData(MyMessage msg) {
         initView();
 
-        message = msg;
-        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        myMessage = msg;
+        String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
 
 //        todo 拿当前发送消息的用户头像
-        String avatar = getAvatarFromServer(message.getToId());
+        String avatar = getAvatarFromServer(myMessage.getToId());
 
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.ic_launcher);
 
 
-        String content = message.getContent();
+        String content = myMessage.getContent();
 
         mTvMessage.setText(content);
         mTvTime.setText(time);
@@ -57,7 +57,7 @@ public class SendTextHolder extends BaseViewHolder<Message> implements View.OnCl
 
 //       todo 发送失败、发送成功、发送中
 
-        int status = message.getSendStatus();
+        int status = myMessage.getSendStatus();
 
         mIvFailResend.setVisibility(View.GONE);
         mPbLoad.setVisibility(View.GONE);
@@ -75,7 +75,7 @@ public class SendTextHolder extends BaseViewHolder<Message> implements View.OnCl
         mTvMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getContent());
+                toast("点击" + myMessage.getContent());
                 if (onRecyclerViewListener != null) {
                     onRecyclerViewListener.onItemClick(getAdapterPosition());
                 }
@@ -95,7 +95,7 @@ public class SendTextHolder extends BaseViewHolder<Message> implements View.OnCl
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getFromId() + "的头像");
+                toast("点击" + myMessage.getFromId() + "的头像");
             }
         });
 

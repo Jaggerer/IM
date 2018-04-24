@@ -8,10 +8,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.chat.Message;
+import com.example.im.entity.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.OnRecyclerViewListener;
-import com.example.im.utils.ImageLoaderFactory;
+import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 /**
  * 接收到的文本类型
  */
-public class ReceiveImageHolder extends BaseViewHolder<Message> {
+public class ReceiveImageHolder extends BaseViewHolder<MyMessage> {
 
     private ImageView mIvAvatar;
 
@@ -28,22 +28,22 @@ public class ReceiveImageHolder extends BaseViewHolder<Message> {
     private ImageView mIvPicture;
     private ProgressBar mPbLoad;
 
-    private Message message;
+    private MyMessage myMessage;
 
     public ReceiveImageHolder(Context context, ViewGroup root, OnRecyclerViewListener onRecyclerViewListener) {
         super(context, root, R.layout.item_chat_received_image, onRecyclerViewListener);
     }
 
     @Override
-    public void bindData(Message o) {
+    public void bindData(MyMessage o) {
         initView();
-        message = o;
-        String avatar = getAvatarFromServer(message.getFromId());
+        myMessage = o;
+        String avatar = getAvatarFromServer(myMessage.getFromId());
         ImageLoaderFactory.getLoader().loadAvator(mIvAvatar, avatar, R.mipmap.head);
-        String time = TimeUtils.formatTime(message.getCreateTime(), "yyyy年MM月dd日 HH:mm");
+        String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
         mTvTime.setText(time);
         //显示图片
-        ImageLoaderFactory.getLoader().load(mIvPicture, message.getFileDir(), R.mipmap.ic_launcher, new ImageLoadingListener() {
+        ImageLoaderFactory.getLoader().load(mIvPicture, myMessage.getFileDir(), R.mipmap.ic_launcher, new ImageLoadingListener() {
             ;
 
             @Override
@@ -70,14 +70,14 @@ public class ReceiveImageHolder extends BaseViewHolder<Message> {
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击" + message.getToId() + "的头像");
+                toast("点击" + myMessage.getToId() + "的头像");
             }
         });
 
         mIvPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("点击图片:" + message.getFileDir() + "");
+                toast("点击图片:" + myMessage.getFileDir() + "");
                 if (onRecyclerViewListener != null) {
                     onRecyclerViewListener.onItemClick(getAdapterPosition());
                 }
