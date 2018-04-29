@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mBinder = (ConnectionService.ClientBinder) iBinder;
-            mBinder.connectService();
+//            mBinder.connectService();
             Log.d("tag", "onServiceConnected");
         }
 

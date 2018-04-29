@@ -10,27 +10,41 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.im.Constant;
 import com.example.im.MainActivity;
 import com.example.im.R;
 import com.example.im.client.ConnectionService;
+import com.example.im.client.http.CommonJsonCallback;
+import com.example.im.client.http.CommonOkhttpClient;
+import com.example.im.client.http.CommonRequest;
+import com.example.im.client.http.DisposeDataHandle;
+import com.example.im.client.http.DisposeDataListener;
+import com.example.im.home.HomeActivity;
+import com.example.im.utils.SPUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
-    ConnectionService.ClientBinder mBinder;
     private EditText mEtUserName;
     private EditText mEtPassword;
     private Button mBtnRegister;
     private Button mBtnLogin;
+    private SPUtil spUtil;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        spUtil = new SPUtil(this);
         initView();
         initListener();
-        Intent bindIntent = new Intent(LoginActivity.this, ConnectionService.class);
-        bindService(bindIntent, connection, BIND_AUTO_CREATE);
     }
 
     private void initListener() {
@@ -45,11 +59,40 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String userName = mEtUserName.getText().toString();
                 String passWord = mEtPassword.getText().toString();
+                HashMap<String, String> params = new HashMap();
+                params.put("name", userName);
+                params.put("password", passWord);
+                CommonOkhttpClient.sendRequest(CommonRequest.createPostRequest(Constant.HTTP_HOST_URL+"/login", params), new CommonJsonCallback(new DisposeDataHandle(new DisposeDataListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d("TAG", "login --> " + s);
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("status") == Constant.REQUEST_SUC) {
+                                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                spUtil.putString("username", userName);
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "登录失败 + " + jsonObject.getString("errorMesg"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-//                mBinder.sendTextMessage();
+                    @Override
+                    public void onFailure(Exception reasonObj) {
+                        Log.d("TAG", "login wrong --> " + reasonObj.getMessage());
+                        Toast.makeText(LoginActivity.this, "登录失败:" + reasonObj.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                })));
             }
         });
     }
+
+
 
     private void initView() {
         mBtnRegister = findViewById(R.id.btn_signup);
@@ -58,16 +101,5 @@ public class LoginActivity extends AppCompatActivity {
         mEtPassword = findViewById(R.id.et_password);
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            mBinder = (ConnectionService.ClientBinder) iBinder;
-            Log.d("tag", "onServiceConnected");
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.d("tag", "onServiceDisconnected");
-        }
-    };
 }

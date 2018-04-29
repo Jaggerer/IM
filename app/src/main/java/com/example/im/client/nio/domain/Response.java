@@ -8,4 +8,19 @@ public class Response  implements java.io.Serializable{
 
     private byte[] body;
 
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public byte[] getBody() {
+        return body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
 }

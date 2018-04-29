@@ -19,13 +19,13 @@ public class NioServer {
 
     public NioServer(int port)throws Exception{
         this.port=port;
-        messageService=new MessageService();
+        messageService=new ServerMessageService();
 
         System.out.println("Server Start----8888:");
 
     }
 
-    private void listen()throws IOException{
+    public void listen()throws IOException{
         Selector selector;
         ServerSocketChannel serverSocketChannel=ServerSocketChannel.open(); //打开服务器套接字通道
         serverSocketChannel.configureBlocking(false);               //服务器配置非阻塞

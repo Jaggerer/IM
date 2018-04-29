@@ -45,5 +45,12 @@ public class Constant {
     //发送消息用户的ID
     public static final String OTHER_USERID = "2";
 
+    public static final int REQUEST_SUC = 1;
+
+    public static final String HOST_URL = "10.0.2.2";
+    public static final String HTTP_PORT = "8080";
+    public static final String NIO_PORT = "8888";
+    public static final String HTTP_HOST_URL = "http://" + HOST_URL + ":" + HTTP_PORT;
+
 
 }

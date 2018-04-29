@@ -16,12 +16,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.im.Constant;
 import com.example.im.R;
+import com.example.im.client.http.CommonJsonCallback;
+import com.example.im.client.http.CommonOkhttpClient;
+import com.example.im.client.http.CommonRequest;
+import com.example.im.client.http.DisposeDataHandle;
+import com.example.im.client.http.DisposeDataListener;
 import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.URIUtils;
 import com.sangcomz.fishbun.FishBun;
@@ -29,6 +35,7 @@ import com.sangcomz.fishbun.adapter.image.impl.PicassoAdapter;
 import com.sangcomz.fishbun.define.Define;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.im.Constant.REQUEST_CAMERA;
@@ -37,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView mIvAvatar;
     private EditText mEtUserName;
     private EditText mEtPassWord;
+    private Button mBtnCommit;
     File picFile;
 
 
@@ -51,10 +59,38 @@ public class RegisterActivity extends AppCompatActivity {
         mIvAvatar = findViewById(R.id.iv_avatar);
         mEtUserName = findViewById(R.id.et_username);
         mEtPassWord = findViewById(R.id.et_password);
+        mBtnCommit = findViewById(R.id.btn_commit);
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPicChooseDialog();
+            }
+        });
+        mBtnCommit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userName = mEtUserName.getText().toString();
+                String passWord = mEtPassWord.getText().toString();
+
+                HashMap<String, String> params = new HashMap();
+                params.put("name", userName);
+                params.put("password", passWord);
+                CommonOkhttpClient.sendRequest(CommonRequest.createPostRequest(Constant.HTTP_HOST_URL + "/register", params), new CommonJsonCallback(new DisposeDataHandle(new DisposeDataListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d("TAG", "register --> " + s);
+                        Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Exception reasonObj) {
+                        Log.d("TAG", "register wrong --> " + reasonObj.getMessage());
+                        Toast.makeText(RegisterActivity.this, "注册失败:" + reasonObj.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                })));
             }
         });
     }
