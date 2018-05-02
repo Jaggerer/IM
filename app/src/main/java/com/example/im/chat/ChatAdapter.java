@@ -15,6 +15,7 @@ import com.example.im.chat.rv.holder.SendTextHolder;
 import com.example.im.chat.rv.holder.SendVoiceHolder;
 import com.example.im.db.bean.MyMessage;
 import com.example.im.utils.UserUtils;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<MyMessage> mList = new ArrayList<>();
     private Context mContext;
-    private String currentUid = "";
+    private String currentUid;
 
     /**
      * 显示时间间隔:10分钟
@@ -108,7 +109,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return new ReceiveImageHolder(parent.getContext(), parent, onRecyclerViewListener);
         } else if (viewType == TYPE_RECEIVER_VOICE) {
             return new ReceiveVoiceHolder(parent.getContext(), parent, onRecyclerViewListener);
-        } else {//开发者自定义的其他类型，可自行处理
+        } else {
+            Logger.e("viewType is null");
             return null;
         }
     }
@@ -139,6 +141,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         MyMessage myMessage = mList.get(position);
+        Logger.d("myMessage.getMessageType() --> " + myMessage.getMessageType());
         if (myMessage.getMessageType() == MyMessage.TYPE_PIC) {
             return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_IMAGE : TYPE_RECEIVER_IMAGE;
         } else if (myMessage.getMessageType() == MyMessage.TYPE_VOICE) {

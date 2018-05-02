@@ -8,7 +8,7 @@ import io.realm.RealmObject;
  * Created by ganchenqing on 2018/3/19.
  */
 
-public class MyMessage extends RealmObject {
+public class MyMessage extends RealmObject implements Cloneable {
     public static final int TYPE_PIC = 1;
     public static final int TYPE_VOICE = 2;
     public static final int TYPE_STRING = 3;
@@ -103,10 +103,11 @@ public class MyMessage extends RealmObject {
         this.remarkId = remarkId;
     }
 
-    public void putStringMessage(StringMessage stringMessage){
+    public void putStringMessage(StringMessage stringMessage) {
         fromId = stringMessage.getFrom();
         toId = stringMessage.getTo();
         content = stringMessage.getContent();
         createTime = stringMessage.getCreatedTime();
+        messageType = MyMessage.TYPE_STRING;
     }
 }

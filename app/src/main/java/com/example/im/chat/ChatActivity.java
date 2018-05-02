@@ -45,6 +45,7 @@ import com.example.im.R;
 import com.example.im.client.ConnectionService;
 import com.example.im.db.bean.ChatRecordBean;
 import com.example.im.db.bean.MyMessage;
+import com.example.im.db.bean.UserBean;
 import com.example.im.entity.User;
 import com.example.im.event.AddMessageEvent;
 import com.example.im.event.RefreshEvent;
@@ -170,6 +171,7 @@ public class ChatActivity extends AppCompatActivity {
         if (recordList.size() > 0) {
             ChatRecordBean chatRecordBean = recordList.get(0);
             RealmList<MyMessage> messageList = chatRecordBean.getMessageList();
+            List<MyMessage> myMessages = messageList.subList(0,messageList.size());
             myMessageList.clear();
             myMessageList.addAll(messageList);
             adapter.notifyDataSetChanged();
@@ -425,6 +427,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addToLocalDB(MyMessage myMessage) {
+        String userName = UserUtils.getCurrentUser(ChatActivity.this);
+
+        RealmResults<UserBean> userList = mRealm.where(UserBean.class)
+                .equalTo("currentUserName", userName).findAll();
+
+        if (userList.size() == 0) {
+            mRealm.beginTransaction();
+            UserBean userBean = mRealm.createObject(UserBean.class);
+            userBean.setCurrentUserName(myMessage.getFromId());
+            userBean.getRecentUserName().add(myMessage.getToId());
+            mRealm.commitTransaction();
+        } else {
+            UserBean userBean = userList.get(0);
+            List<String> recentList = userBean.getRecentUserName();
+            if (!recentList.contains(myMessage.getToId())) {
+                mRealm.beginTransaction();
+                recentList.add(myMessage.getToId());
+                mRealm.commitTransaction();
+            }
+        }
+
+
+
         RealmResults<ChatRecordBean> recordList = mRealm.where(ChatRecordBean.class)
                 .contains("userName", myMessage.getFromId())
                 .contains("userName", myMessage.getToId())

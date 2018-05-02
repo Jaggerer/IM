@@ -32,7 +32,6 @@ public class ClientMessageService extends MessageService {
             StringMessage stringMessage = (StringMessage) message;
             myMessage.putStringMessage(stringMessage);
             mBinder.receiveMessage(myMessage);
-            EventBus.getDefault().post(new RefreshEvent());
         } else if (messageType == MessageType.amrMessage) {
             Logger.d("收到消息,类型为: 语音");
         }

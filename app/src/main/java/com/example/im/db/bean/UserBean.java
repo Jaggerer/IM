@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  * Created by ganchenqing on 2018/4/30.
  */
 
-public class UserBean extends RealmObject {
+public class UserBean extends RealmObject implements Cloneable {
     public String currentUserName;
     public RealmList<String> recentUserName;
 

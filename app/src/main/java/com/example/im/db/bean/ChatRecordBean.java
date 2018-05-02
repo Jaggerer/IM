@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  * Created by ganchenqing on 2018/4/30.
  */
 
-public class ChatRecordBean extends RealmObject {
+public class ChatRecordBean extends RealmObject implements Cloneable{
     public String userName;
     public RealmList<MyMessage> messageList;
 

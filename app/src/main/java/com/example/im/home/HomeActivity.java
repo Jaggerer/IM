@@ -54,12 +54,14 @@ public class HomeActivity extends AppCompatActivity {
         mRealm = Realm.getDefaultInstance();
         currentUser = UserUtils.getCurrentUser(this);
         mTvTitle.setText("最近联系人");
-        searchRecentUser();
         layoutManager = new LinearLayoutManager(this);
         mRvContact.setLayoutManager(layoutManager);
 
         homeAdapter = new HomeAdapter(this, mList);
         mRvContact.setAdapter(homeAdapter);
+
+        searchRecentUser();
+
     }
 
     private void searchRecentUser() {
@@ -108,7 +110,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mBinder = (ConnectionService.ClientBinder) iBinder;
-            mBinder.connectService(mRealm);
+            mBinder.connectService();
         }
 
         @Override

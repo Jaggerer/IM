@@ -16,9 +16,12 @@ import com.example.im.client.nio.domain.StringMessage;
 import com.example.im.db.bean.ChatRecordBean;
 import com.example.im.db.bean.MyMessage;
 import com.example.im.db.bean.UserBean;
+import com.example.im.event.RefreshEvent;
 import com.example.im.utils.URIUtils;
 import com.example.im.utils.UserUtils;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,10 +38,12 @@ import io.realm.RealmResults;
 public class ConnectionService extends Service {
     private ClientBinder mBinder = new ClientBinder();
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("tag", "onCreate");
+//        mRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -68,15 +73,13 @@ public class ConnectionService extends Service {
         return mBinder;
     }
 
+
     public class ClientBinder extends Binder {
         NioClient client;
-        Realm mRealm;
 
-        public void connectService(Realm realm) {
+        public void connectService() {
             MessageService messageService = new ClientMessageService(this);
             client = new NioClient(messageService);
-            mRealm = realm;
-
             new Thread(() -> {
                 IdMessage idMessage = new IdMessage();
                 String userName = UserUtils.getCurrentUser(ConnectionService.this);
@@ -116,7 +119,13 @@ public class ConnectionService extends Service {
 
         }
 
+        public ConnectionService getService() {
+            return ConnectionService.this;
+        }
+
+
         public void receiveMessage(MyMessage myMessage) {
+            Realm mRealm = Realm.getDefaultInstance();
             String userName = UserUtils.getCurrentUser(ConnectionService.this);
 
             RealmResults<UserBean> userList = mRealm.where(UserBean.class)
@@ -158,7 +167,7 @@ public class ConnectionService extends Service {
                 mList.add(myMessage);
                 mRealm.commitTransaction();
             }
-
+            EventBus.getDefault().post(new RefreshEvent());
         }
     }
 }
