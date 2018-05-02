@@ -21,69 +21,20 @@
             android:src="@mipmap/head" />
 
         <TextView
-            android:text="123213123"
             android:id="@+id/tv_recent_name"
             android:layout_width="wrap_content"
             android:layout_height="25.0dip"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="58dp"
-            android:layout_marginTop="12dp"
             android:layout_toRightOf="@id/iv_recent_avatar"
             android:ellipsize="end"
             android:gravity="left|center"
             android:singleLine="true"
+            android:text="123213123"
             android:textColor="@color/color_text_black_3e3e39"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_recent_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_recent_name"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@id/iv_recent_avatar"
-            android:ellipsize="end"
-            android:gravity="left"
-            android:singleLine="true"
-            android:textColor="@color/color_9999"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/tv_recent_time"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_above="@id/tv_recent_msg"
-            android:layout_alignParentRight="true"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_marginRight="10dip"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:padding="0.0dip"
-            android:scrollbarSize="14sp"
-            android:singleLine="true"
-            android:textColor="@color/color_9999"
-            android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/tv_recent_unread"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_recent_time"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/list_newmessage2"
-            android:gravity="center"
-            android:paddingBottom="3dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="3dp"
-            android:textColor="@color/color_white_ffffff"
-            android:textSize="13dp"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <View

@@ -25,10 +25,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_CONTENT = 1;
 
-    private List<Contact> mList = new ArrayList<>();
+    private List<String> mList = new ArrayList<>();
     private Context mContext;
 
-    public HomeAdapter(Context context, List<Contact> mList) {
+    public HomeAdapter(Context context, List<String> mList) {
         this.mContext = context;
         this.mList = mList;
     }
@@ -47,7 +47,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position != 0) {
-            ((HomeViewHolder) holder).mTv.setText(mList.get(position - 1).getUserID());
+            ((HomeViewHolder) holder).mTv.setText(mList.get(position - 1));
         }
     }
 

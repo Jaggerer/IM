@@ -2,7 +2,9 @@ package com.example.im.chat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -39,8 +42,13 @@ import android.widget.Toast;
 
 import com.example.im.Constant;
 import com.example.im.R;
-import com.example.im.entity.MyMessage;
+import com.example.im.client.ConnectionService;
+import com.example.im.db.bean.ChatRecordBean;
+import com.example.im.db.bean.MyMessage;
+import com.example.im.entity.User;
 import com.example.im.event.AddMessageEvent;
+import com.example.im.event.RefreshEvent;
+import com.example.im.utils.UserUtils;
 import com.example.im.voice.OnRecordChangeListener;
 import com.example.im.voice.RecordManager;
 import com.sangcomz.fishbun.FishBun;
@@ -55,10 +63,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
+
 import static com.example.im.Constant.REQUEST_CAMERA;
 
 public class ChatActivity extends AppCompatActivity {
-
+    TextView mTvTitle;
+    ImageView mIvback;
 
     LinearLayout mLlChat;
 
@@ -99,18 +112,68 @@ public class ChatActivity extends AppCompatActivity {
 
     File picFile;
 
+    private Realm mRealm;
+    private String chatName;
+    private String currentName;
+
+    ConnectionService.ClientBinder mBinder;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         EventBus.getDefault().register(this);
-        initView();
-        myMessageList.addAll(getMessageListFromServer());
+        mRealm = Realm.getDefaultInstance();
+        startService();
 
+        initView();
         initAdapter();
         initBottomView();
         initVoiceView();
         initListener();
+        initData();
+    }
+
+    private void initData() {
+        chatName = getIntent().getStringExtra("chatname");
+        currentName = UserUtils.getCurrentUser(this);
+
+        mTvTitle.setText(chatName);
+
+        searchRecordFromDB();
+
+    }
+
+    private void startService() {
+        Intent bindIntent = new Intent(ChatActivity.this, ConnectionService.class);
+        bindService(bindIntent, connection, BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            mBinder = (ConnectionService.ClientBinder) iBinder;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.d("tag", "onServiceDisconnected");
+        }
+    };
+
+    private void searchRecordFromDB() {
+        RealmResults<ChatRecordBean> recordList = mRealm.where(ChatRecordBean.class)
+                .contains("userName", chatName).and()
+                .contains("userName", currentName)
+                .findAll();
+        if (recordList.size() > 0) {
+            ChatRecordBean chatRecordBean = recordList.get(0);
+            RealmList<MyMessage> messageList = chatRecordBean.getMessageList();
+            myMessageList.clear();
+            myMessageList.addAll(messageList);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -120,68 +183,46 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        mBtnChatSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMessage();
-            }
-        });
+        mBtnChatSend.setOnClickListener(view -> sendMessage());
 
-        mBtnChatAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mLlMore.getVisibility() == View.GONE) {
-                    mLlMore.setVisibility(View.VISIBLE);
-                    mLlAdd.setVisibility(View.VISIBLE);
+        mBtnChatAdd.setOnClickListener(view -> {
+            if (mLlMore.getVisibility() == View.GONE) {
+                mLlMore.setVisibility(View.VISIBLE);
+                mLlAdd.setVisibility(View.VISIBLE);
+                mLlEmj.setVisibility(View.GONE);
+                hideSoftInputView();
+            } else {
+                if (mLlEmj.getVisibility() == View.VISIBLE) {
                     mLlEmj.setVisibility(View.GONE);
-                    hideSoftInputView();
+                    mLlAdd.setVisibility(View.VISIBLE);
                 } else {
-                    if (mLlEmj.getVisibility() == View.VISIBLE) {
-                        mLlEmj.setVisibility(View.GONE);
-                        mLlAdd.setVisibility(View.VISIBLE);
-                    } else {
-                        mLlMore.setVisibility(View.GONE);
-                    }
+                    mLlMore.setVisibility(View.GONE);
                 }
             }
         });
 
 //        发送本地图片
-        mTvSendPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toast("发送本地图片");
-                FishBun.with(ChatActivity.this).setImageAdapter(new PicassoAdapter()).setMaxCount(1).setCamera(true).startAlbum();
-            }
+        mTvSendPic.setOnClickListener(view -> {
+            toast("发送本地图片");
+            FishBun.with(ChatActivity.this).setImageAdapter(new PicassoAdapter()).setMaxCount(1).setCamera(true).startAlbum();
         });
-        mTvSendCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toast("发送拍照图片");
-                applyWritePermission();
-            }
+        mTvSendCamera.setOnClickListener(view -> {
+            toast("发送拍照图片");
+            applyWritePermission();
         });
 
 //        发送语音
-        mBtnChatVoice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(ChatActivity.this, android.Manifest.permission.RECORD_AUDIO)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ChatActivity.this, new String[]{
-                            android.Manifest.permission.RECORD_AUDIO}, Constant.REQUEST_MIC);
-                } else {
-                    showSpeakeLayout();
-                }
+        mBtnChatVoice.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{
+                        Manifest.permission.RECORD_AUDIO}, Constant.REQUEST_MIC);
+            } else {
+                showSpeakeLayout();
             }
         });
 
-        mBtnChatKeybord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEditState(false);
-            }
-        });
+        mBtnChatKeybord.setOnClickListener(view -> showEditState(false));
 
     }
 
@@ -292,6 +333,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        mIvback = findViewById(R.id.iv_left);
+        mTvTitle = findViewById(R.id.tv_title);
         mBtnChatAdd = findViewById(R.id.btn_chat_add);
         mBtnChatEmj = findViewById(R.id.btn_chat_emo);
         mBtnChatKeybord = findViewById(R.id.btn_chat_keyboard);
@@ -355,20 +398,10 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, 0);
     }
 
-    //todo从服务器拿聊天记录
-    public List<MyMessage> getMessageListFromServer() {
-        List<MyMessage> serverList = new ArrayList<>();
-        MyMessage myMessage = new MyMessage();
-        myMessage.setContent("接受文字");
-        myMessage.setMessageType(Constant.TYPE_TEXT);
-        myMessage.setCreateTime(System.currentTimeMillis());
-        myMessage.setFromId(Constant.OTHER_USERID);
-        myMessage.setToId(Constant.CURRENT_USERID);
-        serverList.add(myMessage);
-        return serverList;
-    }
 
-    //todo 发送消息
+    /**
+     * 发送消息，并且将消息保存到本地数据库中
+     */
     private void sendMessage() {
         String text = mEtText.getText().toString();
         if (TextUtils.isEmpty(text.trim())) {
@@ -376,23 +409,50 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
         MyMessage myMessage = new MyMessage();
-        myMessage.setToId(Constant.OTHER_USERID);
-        myMessage.setFromId(Constant.CURRENT_USERID);
+        myMessage.setToId(chatName);
+        myMessage.setFromId(currentName);
         myMessage.setCreateTime(System.currentTimeMillis());
         myMessage.setContent(text);
-        myMessage.setMessageType(Constant.TYPE_TEXT);
+        myMessage.setMessageType(MyMessage.TYPE_STRING);
+
+        //发送给服务器
+        mBinder.sendMessage(myMessage);
+        //添加到本地数据库并且本地显示
+        addToLocalDB(myMessage);
         adapter.addMessage(myMessage);
         mEtText.setText("");
 
     }
 
+    private void addToLocalDB(MyMessage myMessage) {
+        RealmResults<ChatRecordBean> recordList = mRealm.where(ChatRecordBean.class)
+                .contains("userName", myMessage.getFromId())
+                .contains("userName", myMessage.getToId())
+                .findAll();
+        if (recordList.size() == 0) {
+            mRealm.beginTransaction();
+            ChatRecordBean chatRecordBean = mRealm.createObject(ChatRecordBean.class);
+            chatRecordBean.setUserName(myMessage.getFromId() + "_" + myMessage.getToId());
+            mRealm.copyToRealm(myMessage);
+            chatRecordBean.getMessageList().add(myMessage);
+            mRealm.commitTransaction();
+        } else {
+            ChatRecordBean chatRecordBean = recordList.get(0);
+            RealmList<MyMessage> mList = chatRecordBean.getMessageList();
+            mRealm.beginTransaction();
+            mRealm.copyToRealm(myMessage);
+            mList.add(myMessage);
+            mRealm.commitTransaction();
+        }
+    }
+
     //todo 发送图片
     private void sendPicture(Uri uri) {
         final MyMessage myMessage = new MyMessage();
-        myMessage.setMessageType(Constant.TYPE_PIC);
+        myMessage.setMessageType(MyMessage.TYPE_PIC);
         myMessage.setCreateTime(System.currentTimeMillis());
-        myMessage.setFromId(Constant.CURRENT_USERID);
-        myMessage.setToId(Constant.OTHER_USERID);
+        myMessage.setFromId(currentName);
+        myMessage.setToId(chatName);
         myMessage.setFileDir(uri.toString());
         myMessage.setSendStatus(Constant.SENDING);
         adapter.addMessage(myMessage);
@@ -421,15 +481,14 @@ public class ChatActivity extends AppCompatActivity {
     //todo 发送声音
     public void sendVoiceMessage(String localPath, int recordTime) {
         final MyMessage myMessage = new MyMessage();
-        myMessage.setMessageType(Constant.TYPE_VOICE);
+        myMessage.setMessageType(MyMessage.TYPE_VOICE);
         myMessage.setCreateTime(System.currentTimeMillis());
-        myMessage.setFromId(Constant.CURRENT_USERID);
-        myMessage.setToId(Constant.OTHER_USERID);
+        myMessage.setFromId(currentName);
+        myMessage.setToId(chatName);
         myMessage.setFileDir(localPath);
         myMessage.setSendStatus(Constant.SENDING);
         myMessage.setRecorderLength(recordTime);
         adapter.addMessage(myMessage);
-        File f = new File("123");
 
         new Thread(new Runnable() {
             @Override
@@ -524,7 +583,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public String getCurrentUserId() {
-        return "1";
+        return UserUtils.getCurrentUser(this);
     }
 
 
@@ -636,7 +695,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(AddMessageEvent event) {
-        adapter.addMessage(event.getMyMessage());
+    public void onEvent(RefreshEvent event) {
+        searchRecordFromDB();
     }
 }

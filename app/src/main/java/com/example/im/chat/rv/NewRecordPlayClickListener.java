@@ -8,7 +8,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.im.entity.MyMessage;
+import com.example.im.db.bean.MyMessage;
 import com.example.im.R;
 
 import java.io.File;

@@ -1,14 +1,17 @@
-package com.example.im.entity;
+package com.example.im.db.bean;
+
+import com.example.im.client.nio.domain.StringMessage;
+
+import io.realm.RealmObject;
 
 /**
  * Created by ganchenqing on 2018/3/19.
  */
 
-public class MyMessage {
-    public static final int TYPE_STRING = 0;
+public class MyMessage extends RealmObject {
     public static final int TYPE_PIC = 1;
     public static final int TYPE_VOICE = 2;
-    public static final int TYPE_VEDIO = 3;
+    public static final int TYPE_STRING = 3;
 
     private String fromId;
     private String toId;
@@ -98,5 +101,12 @@ public class MyMessage {
 
     public void setRemarkId(String remarkId) {
         this.remarkId = remarkId;
+    }
+
+    public void putStringMessage(StringMessage stringMessage){
+        fromId = stringMessage.getFrom();
+        toId = stringMessage.getTo();
+        content = stringMessage.getContent();
+        createTime = stringMessage.getCreatedTime();
     }
 }

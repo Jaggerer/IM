@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.im.R;
 import com.example.im.chat.ChatActivity;
+import com.example.im.entity.OnlineUser;
 import com.example.im.entity.User;
 
 import java.util.List;
@@ -21,10 +22,10 @@ import java.util.List;
  */
 
 public class FindUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<User> mUserList;
+    private List<OnlineUser.OnLineUserData> mUserList;
     private Context mContext;
 
-    public FindUserAdapter(Context mContext,List<User> mUserList) {
+    public FindUserAdapter(Context mContext, List<OnlineUser.OnLineUserData> mUserList) {
         this.mUserList = mUserList;
         this.mContext = mContext;
     }
@@ -59,7 +60,10 @@ public class FindUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mRlOnlineUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    view.getContext().startActivity(new Intent(view.getContext(), ChatActivity.class));
+                    String chatUserName = mTvName.getText().toString();
+                    Intent intent = new Intent(view.getContext(), ChatActivity.class);
+                    intent.putExtra("chatname", chatUserName);
+                    view.getContext().startActivity(intent);
                 }
             });
         }

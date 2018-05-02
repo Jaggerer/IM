@@ -9,6 +9,12 @@ import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by ganchenqing on 2018/4/24.
  */
@@ -112,6 +118,24 @@ public class URIUtils {
      */
     private static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+
+    public static byte[] readFile(File file) {
+        try {
+            //创建一个字节输入流对象
+            InputStream is = new FileInputStream(file);
+            //根据文件大小来创建字节数组
+            byte[] bytes = new byte[(int) file.length()];
+            int len = is.read(bytes);//返回读取字节的长度
+            is.close();//关闭流
+            return bytes;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

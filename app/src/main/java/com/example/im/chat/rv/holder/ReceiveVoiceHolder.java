@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.im.entity.MyMessage;
+import com.example.im.db.bean.MyMessage;
 import com.example.im.R;
 import com.example.im.chat.rv.NewRecordPlayClickListener;
 import com.example.im.chat.rv.OnRecyclerViewListener;

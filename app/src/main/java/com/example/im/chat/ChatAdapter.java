@@ -13,7 +13,8 @@ import com.example.im.chat.rv.holder.ReceiveVoiceHolder;
 import com.example.im.chat.rv.holder.SendImageHolder;
 import com.example.im.chat.rv.holder.SendTextHolder;
 import com.example.im.chat.rv.holder.SendVoiceHolder;
-import com.example.im.entity.MyMessage;
+import com.example.im.db.bean.MyMessage;
+import com.example.im.utils.UserUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,11 +139,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         MyMessage myMessage = mList.get(position);
-        if (myMessage.getMessageType() == Constant.TYPE_PIC) {
+        if (myMessage.getMessageType() == MyMessage.TYPE_PIC) {
             return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_IMAGE : TYPE_RECEIVER_IMAGE;
-        } else if (myMessage.getMessageType() == Constant.TYPE_VOICE) {
+        } else if (myMessage.getMessageType() == MyMessage.TYPE_VOICE) {
             return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_VOICE : TYPE_RECEIVER_VOICE;
-        } else if (myMessage.getMessageType() == Constant.TYPE_TEXT) {
+        } else if (myMessage.getMessageType() == MyMessage.TYPE_STRING) {
             return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_TXT : TYPE_RECEIVER_TXT;
         } else {
             return -1;
@@ -150,7 +151,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public String getCurrentUid() {
-        return Constant.CURRENT_USERID;
+        return UserUtils.getCurrentUser(mContext);
     }
 
     private OnRecyclerViewListener onRecyclerViewListener;
