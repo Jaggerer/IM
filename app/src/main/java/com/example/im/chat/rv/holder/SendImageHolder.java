@@ -1,6 +1,7 @@
 package com.example.im.chat.rv.holder;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +13,10 @@ import com.example.im.R;
 import com.example.im.chat.rv.OnRecyclerViewListener;
 import com.example.im.utils.imageloaderutil.ImageLoaderFactory;
 import com.example.im.utils.TimeUtils;
+import com.orhanobut.logger.Logger;
+
+import java.io.File;
+import java.net.URI;
 
 import static com.example.im.Constant.SENDING;
 import static com.example.im.Constant.SEND_FAILED;
@@ -62,8 +67,8 @@ public class SendImageHolder extends BaseViewHolder<MyMessage> {
             mIvFailResend.setVisibility(View.GONE);
             mPbLoad.setVisibility(View.GONE);
         }
-
-        ImageLoaderFactory.getLoader().load(mIvPicture, myMessage.getFileDir(), R.mipmap.ic_launcher, null);
+        Logger.d(Uri.fromFile(new File(myMessage.getFileDir())).toString());
+        ImageLoaderFactory.getLoader().load(mIvPicture,Uri.fromFile(new File(myMessage.getFileDir())).toString() , R.mipmap.ic_launcher, null);
 
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override

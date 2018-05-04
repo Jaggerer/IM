@@ -20,6 +20,7 @@ import com.example.im.client.http.DisposeDataHandle;
 import com.example.im.client.http.DisposeDataListener;
 import com.example.im.entity.OnlineUser;
 import com.example.im.entity.User;
+import com.example.im.utils.UserUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -94,7 +95,11 @@ public class FindUserActivity extends AppCompatActivity {
             public void onSuccess(OnlineUser s) {
                 if (s.isSuccess()) {
                     mList.clear();
-                    mList.addAll(s.getData());
+                    for (OnlineUser.OnLineUserData data : s.getData()) {
+                        if (!data.getName().equals(UserUtils.getCurrentUser(FindUserActivity.this))) {
+                            mList.add(data);
+                        }
+                    }
                     findUserAdapter.notifyDataSetChanged();
                 }
             }

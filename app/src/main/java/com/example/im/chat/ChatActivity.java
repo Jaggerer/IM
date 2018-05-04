@@ -183,6 +183,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        mRealm.close();
     }
 
     private void initListener() {
@@ -321,7 +322,7 @@ public class ChatActivity extends AppCompatActivity {
             case Constant.REQUEST_CAMERA:
                 if (resultCode == RESULT_OK) {
                     Uri uri = FileProvider.getUriForFile(this, "com.example.im.fileprovider", picFile);
-                    sendPicture(uri);
+                    sendPicture(null);
                     break;
                 }
         }
@@ -478,7 +479,11 @@ public class ChatActivity extends AppCompatActivity {
         myMessage.setCreateTime(System.currentTimeMillis());
         myMessage.setToId(chatName);
         myMessage.setFromId(currentName);
-        myMessage.setFileDir(URIUtils.getRealPathFromUri(this, uri));
+        if (uri != null) {
+            myMessage.setFileDir(URIUtils.getRealPathFromUri(this, uri));
+        } else {
+            myMessage.setFileDir(picFile.getAbsolutePath());
+        }
         //发送给服务器
         mBinder.sendMessage(myMessage);
         //添加到本地数据库并且本地显示

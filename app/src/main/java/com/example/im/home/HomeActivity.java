@@ -59,7 +59,6 @@ public class HomeActivity extends AppCompatActivity {
 
         homeAdapter = new HomeAdapter(this, mList);
         mRvContact.setAdapter(homeAdapter);
-
         searchRecentUser();
 
     }
@@ -70,7 +69,13 @@ public class HomeActivity extends AppCompatActivity {
         if (userList.size() > 0) {
             UserBean userBean = userList.get(0);
             mList.clear();
-            mList.addAll(userBean.getRecentUserName());
+            for (String name : userBean.getRecentUserName()) {
+                if (name != null) {
+                    if (!name.equals(currentUser)) {
+                        mList.add(name);
+                    }
+                }
+            }
             homeAdapter.notifyDataSetChanged();
         }
     }
@@ -93,12 +98,15 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        searchRecentUser();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
+        mRealm.close();
     }
 
     private void startService() {
