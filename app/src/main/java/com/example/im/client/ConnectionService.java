@@ -43,7 +43,6 @@ public class ConnectionService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d("tag", "onCreate");
-//        mRealm = Realm.getDefaultInstance();
     }
 
     @Override

@@ -43,7 +43,7 @@ public class ReceiveImageHolder extends BaseViewHolder<MyMessage> {
         String time = TimeUtils.formatTime(myMessage.getCreateTime(), "yyyy年MM月dd日 HH:mm");
         mTvTime.setText(time);
         //显示图片
-        ImageLoaderFactory.getLoader().load(mIvPicture, myMessage.getFileDir(), R.mipmap.ic_launcher, new ImageLoadingListener() {
+        ImageLoaderFactory.getLoader().load(mIvPicture, o.getContent(), R.mipmap.ic_launcher, new ImageLoadingListener() {
             ;
 
             @Override

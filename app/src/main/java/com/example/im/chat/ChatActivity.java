@@ -49,6 +49,7 @@ import com.example.im.db.bean.UserBean;
 import com.example.im.entity.User;
 import com.example.im.event.AddMessageEvent;
 import com.example.im.event.RefreshEvent;
+import com.example.im.utils.URIUtils;
 import com.example.im.utils.UserUtils;
 import com.example.im.voice.OnRecordChangeListener;
 import com.example.im.voice.RecordManager;
@@ -171,7 +172,7 @@ public class ChatActivity extends AppCompatActivity {
         if (recordList.size() > 0) {
             ChatRecordBean chatRecordBean = recordList.get(0);
             RealmList<MyMessage> messageList = chatRecordBean.getMessageList();
-            List<MyMessage> myMessages = messageList.subList(0,messageList.size());
+            List<MyMessage> myMessages = messageList.subList(0, messageList.size());
             myMessageList.clear();
             myMessageList.addAll(messageList);
             adapter.notifyDataSetChanged();
@@ -449,7 +450,6 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
-
         RealmResults<ChatRecordBean> recordList = mRealm.where(ChatRecordBean.class)
                 .contains("userName", myMessage.getFromId())
                 .contains("userName", myMessage.getToId())
@@ -473,34 +473,17 @@ public class ChatActivity extends AppCompatActivity {
 
     //todo 发送图片
     private void sendPicture(Uri uri) {
-        final MyMessage myMessage = new MyMessage();
+        MyMessage myMessage = new MyMessage();
         myMessage.setMessageType(MyMessage.TYPE_PIC);
         myMessage.setCreateTime(System.currentTimeMillis());
-        myMessage.setFromId(currentName);
         myMessage.setToId(chatName);
-        myMessage.setFileDir(uri.toString());
-        myMessage.setSendStatus(Constant.SENDING);
+        myMessage.setFromId(currentName);
+        myMessage.setFileDir(URIUtils.getRealPathFromUri(this, uri));
+        //发送给服务器
+        mBinder.sendMessage(myMessage);
+        //添加到本地数据库并且本地显示
+        addToLocalDB(myMessage);
         adapter.addMessage(myMessage);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    myMessage.setSendStatus(Constant.SEND_SUC);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }).start();
-
     }
 
     //todo 发送声音

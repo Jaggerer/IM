@@ -141,7 +141,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         MyMessage myMessage = mList.get(position);
-        Logger.d("myMessage.getMessageType() --> " + myMessage.getMessageType());
         if (myMessage.getMessageType() == MyMessage.TYPE_PIC) {
             return myMessage.getFromId().equals(currentUid) ? TYPE_SEND_IMAGE : TYPE_RECEIVER_IMAGE;
         } else if (myMessage.getMessageType() == MyMessage.TYPE_VOICE) {

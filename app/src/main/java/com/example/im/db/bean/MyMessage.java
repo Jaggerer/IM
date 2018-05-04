@@ -1,6 +1,10 @@
 package com.example.im.db.bean;
 
+import com.example.im.Constant;
+import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
+
+import java.io.File;
 
 import io.realm.RealmObject;
 
@@ -104,10 +108,19 @@ public class MyMessage extends RealmObject implements Cloneable {
     }
 
     public void putStringMessage(StringMessage stringMessage) {
+        messageType = MyMessage.TYPE_STRING;
         fromId = stringMessage.getFrom();
         toId = stringMessage.getTo();
         content = stringMessage.getContent();
         createTime = stringMessage.getCreatedTime();
-        messageType = MyMessage.TYPE_STRING;
+    }
+
+    public void putPicMessage(PicMessage picMessage) {
+        messageType = MyMessage.TYPE_PIC;
+        fromId = picMessage.getFrom();
+        toId = picMessage.getTo();
+        createTime = picMessage.getCreatedTime();
+        content = Constant.HTTP_HOST_URL + "/" + picMessage.getPicUrl();
+
     }
 }

@@ -25,7 +25,14 @@ public class ClientMessageService extends MessageService {
         int messageType = MessageType.getMessageType(message);
         if (messageType == MessageType.picMessage) {
             Logger.d("收到消息,类型为: 图片");
-            Logger.d(((PicMessage) message).getPicUrl());
+            MyMessage myMessage = new MyMessage();
+            PicMessage picMessage = (PicMessage) message;
+
+            Logger.d((picMessage.getPicUrl()));
+
+            myMessage.putPicMessage(picMessage);
+            mBinder.receiveMessage(myMessage);
+
         } else if (messageType == MessageType.stringMessage) {
             Logger.d("收到消息,类型为: 文字");
             MyMessage myMessage = new MyMessage();
