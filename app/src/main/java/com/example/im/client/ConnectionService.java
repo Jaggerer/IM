@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.im.IMNotificationManager;
@@ -13,10 +14,11 @@ import com.example.im.chat.ChatActivity;
 import com.example.im.client.nio.ClientMessageService;
 import com.example.im.client.nio.MessageService;
 import com.example.im.client.nio.NioClient;
-import com.example.im.client.nio.domain.AmrMessage;
 import com.example.im.client.nio.domain.IdMessage;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
+import com.example.im.client.nio.domain.VoiceMessage;
+import com.example.im.client.nio.util.SerializationUtils;
 import com.example.im.db.bean.ChatRecordBean;
 import com.example.im.db.bean.MyMessage;
 import com.example.im.db.bean.UserBean;
@@ -109,15 +111,15 @@ public class ConnectionService extends Service {
                     client.addMessage(picMessage);
                     break;
                 case MyMessage.TYPE_VOICE:
-                    AmrMessage amrMessage = new AmrMessage();
+                    VoiceMessage voiceMessage = new VoiceMessage();
                     File amrFile = new File(message.getFileDir());
-                    amrMessage.setArmName(amrFile.getName());
-                    amrMessage.setCreatedTime(message.getCreateTime());
-                    amrMessage.setFrom(message.getFromId());
-                    amrMessage.setTo(message.getToId());
-                    amrMessage.setRecorderLength(message.getRecorderLength());
-                    amrMessage.setArm(URIUtils.readFile(amrFile));
-                    client.addMessage(amrMessage);
+                    voiceMessage.setVoiceName(amrFile.getName());
+                    voiceMessage.setCreatedTime(message.getCreateTime());
+                    voiceMessage.setFrom(message.getFromId());
+                    voiceMessage.setTo(message.getToId());
+                    voiceMessage.setVoiceData(URIUtils.readFile(amrFile));
+                    voiceMessage.setRecorderLength(message.getRecorderLength());
+                    client.addMessage(voiceMessage);
                     break;
                 case MyMessage.TYPE_STRING:
                     StringMessage stringMessage = new StringMessage();
@@ -190,4 +192,6 @@ public class ConnectionService extends Service {
             IMNotificationManager.getInstance(ConnectionService.this).showNotification(pendingIntent, myMessage.getFromId());
         }
     }
+
+
 }

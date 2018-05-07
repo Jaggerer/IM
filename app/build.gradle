@@ -46,4 +46,8 @@ dependencies {
     implementation files('libs/universal-image-loader-1.9.5.jar')
     implementation 'com.sangcomz:FishBun:0.8.6'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    // https://mvnrepository.com/artifact/com.caucho/hessian
+    compile group: 'com.caucho', name: 'hessian', version: '4.0.7'
+
 }

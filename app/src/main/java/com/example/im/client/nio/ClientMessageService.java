@@ -7,10 +7,7 @@ import com.example.im.client.nio.domain.MessageType;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
 import com.example.im.db.bean.MyMessage;
-import com.example.im.event.RefreshEvent;
 import com.orhanobut.logger.Logger;
-
-import org.greenrobot.eventbus.EventBus;
 
 public class ClientMessageService extends MessageService {
     ConnectionService.ClientBinder mBinder;
@@ -39,7 +36,7 @@ public class ClientMessageService extends MessageService {
             StringMessage stringMessage = (StringMessage) message;
             myMessage.putStringMessage(stringMessage);
             mBinder.receiveMessage(myMessage);
-        } else if (messageType == MessageType.amrMessage) {
+        } else if (messageType == MessageType.voiceMessage) {
             Logger.d("收到消息,类型为: 语音");
         }
     }

@@ -12,8 +12,8 @@ public class MessageFactory {
             case MessageType.picMessage:
                 clazz = PicMessage.class;
                 break;
-            case MessageType.amrMessage:
-                clazz = AmrMessage.class;
+            case MessageType.voiceMessage:
+                clazz = VoiceMessage.class;
                 break;
             case MessageType.idMessage:
                 clazz = IdMessage.class;

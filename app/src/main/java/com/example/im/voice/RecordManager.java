@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -110,7 +112,7 @@ public class RecordManager {
 
         recordName = getRecordFileName();
         recordPath = getRecordFilePath(userObjectId);
-        Log.d("voice", "voice -> path --> " + recordPath);
+        Logger.d("voice -> path --> " + recordPath);
         file = new File(recordPath);
         mMediaRecorder.setOutputFile(file.getAbsolutePath());
 
