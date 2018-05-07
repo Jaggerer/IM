@@ -9,6 +9,7 @@ import java.io.File;
  */
 
 public class Constant {
+
     //文本
     public static final int TYPE_RECEIVER_TXT = 3;
     public static final int TYPE_SEND_TXT = 4;
@@ -36,7 +37,8 @@ public class Constant {
 
     public static final int REQUEST_SUC = 1;
 
-    public static final String HOST_URL = "10.0.2.2";
+//    public static final String HOST_URL = "10.0.2.2";
+    public static final String HOST_URL = "192.168.1.167";
     public static final String HTTP_PORT = "8080";
     public static final String NIO_PORT = "8888";
     public static final String HTTP_HOST_URL = "http://" + HOST_URL + ":" + HTTP_PORT;

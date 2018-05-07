@@ -73,7 +73,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    itemView.getContext().startActivity(new Intent(itemView.getContext(), ChatActivity.class));
+                    String chatUserName = mTv.getText().toString();
+                    Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
+                    intent.putExtra("chatname", chatUserName);
+                    view.getContext().startActivity(intent);
                 }
             });
         }

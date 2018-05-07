@@ -7,9 +7,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.im.IMNotificationManager;
+import com.example.im.MainActivity;
+import com.example.im.chat.ChatActivity;
 import com.example.im.client.nio.ClientMessageService;
 import com.example.im.client.nio.MessageService;
 import com.example.im.client.nio.NioClient;
+import com.example.im.client.nio.domain.AmrMessage;
 import com.example.im.client.nio.domain.IdMessage;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
@@ -105,6 +109,15 @@ public class ConnectionService extends Service {
                     client.addMessage(picMessage);
                     break;
                 case MyMessage.TYPE_VOICE:
+                    AmrMessage amrMessage = new AmrMessage();
+                    File amrFile = new File(message.getFileDir());
+                    amrMessage.setArmName(amrFile.getName());
+                    amrMessage.setCreatedTime(message.getCreateTime());
+                    amrMessage.setFrom(message.getFromId());
+                    amrMessage.setTo(message.getToId());
+                    amrMessage.setRecorderLength(message.getRecorderLength());
+                    amrMessage.setArm(URIUtils.readFile(amrFile));
+                    client.addMessage(amrMessage);
                     break;
                 case MyMessage.TYPE_STRING:
                     StringMessage stringMessage = new StringMessage();
@@ -166,7 +179,15 @@ public class ConnectionService extends Service {
                 mList.add(myMessage);
                 mRealm.commitTransaction();
             }
+            showNotification(myMessage);
             EventBus.getDefault().post(new RefreshEvent());
+        }
+
+        private void showNotification(MyMessage myMessage) {
+            Intent pendingIntent = new Intent(ConnectionService.this, ChatActivity.class);
+            pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            pendingIntent.putExtra("chatname", myMessage.getToId());
+            IMNotificationManager.getInstance(ConnectionService.this).showNotification(pendingIntent, myMessage.getFromId());
         }
     }
 }

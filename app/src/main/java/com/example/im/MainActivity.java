@@ -15,6 +15,7 @@ import com.example.im.chat.ChatActivity;
 import com.example.im.client.ConnectionService;
 import com.example.im.home.HomeActivity;
 import com.example.im.login.LoginActivity;
+import com.orhanobut.logger.Logger;
 
 public class MainActivity extends AppCompatActivity {
     Button mBtnLogin;
@@ -33,24 +34,16 @@ public class MainActivity extends AppCompatActivity {
         mBtnNotify = findViewById(R.id.btn_notify);
         mBtnStartService = findViewById(R.id.btn_start_service);
         mBtnStopService = findViewById(R.id.btn_stop_service);
-        mBtnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            }
-        });
-        mBtnIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-            }
+        mBtnLogin.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
+        mBtnIn.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
         });
         mBtnNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent pendingIntent = new Intent(MainActivity.this, ChatActivity.class);
                 pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                IMNotificationManager.getInstance(MainActivity.this).showNotification(pendingIntent);
+//                IMNotificationManager.getInstance(MainActivity.this).showNotification(pendingIntent);
             }
         });
         mBtnStartService.setOnClickListener(new View.OnClickListener() {

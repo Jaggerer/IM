@@ -493,33 +493,16 @@ public class ChatActivity extends AppCompatActivity {
 
     //todo 发送声音
     public void sendVoiceMessage(String localPath, int recordTime) {
-        final MyMessage myMessage = new MyMessage();
+        MyMessage myMessage = new MyMessage();
         myMessage.setMessageType(MyMessage.TYPE_VOICE);
         myMessage.setCreateTime(System.currentTimeMillis());
         myMessage.setFromId(currentName);
         myMessage.setToId(chatName);
         myMessage.setFileDir(localPath);
-        myMessage.setSendStatus(Constant.SENDING);
         myMessage.setRecorderLength(recordTime);
+        mBinder.sendMessage(myMessage);
+        addToLocalDB(myMessage);
         adapter.addMessage(myMessage);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    myMessage.setSendStatus(Constant.SEND_SUC);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
 
     }
 

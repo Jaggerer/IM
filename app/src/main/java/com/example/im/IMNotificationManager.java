@@ -36,7 +36,7 @@ public class IMNotificationManager extends ContextWrapper {
     }
 
     private void showNotification(String title, String content, String ticker, Intent intent) {
-        BitmapDrawable bitmapDrawable = (BitmapDrawable)this.getApplicationInfo().loadIcon(this.getPackageManager());
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) this.getApplicationInfo().loadIcon(this.getPackageManager());
         Bitmap appIcon = bitmapDrawable.getBitmap();
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -55,8 +55,8 @@ public class IMNotificationManager extends ContextWrapper {
         manager.notify(0, notification);
     }
 
-    public void showNotification(Intent intent) {
-        showNotification("提示", "您收到一条新消息", "新消息", intent);
+    public void showNotification(Intent intent, String from) {
+        showNotification("提示", "您收到一条新消息", "来自:" + from, intent);
     }
 
 }
