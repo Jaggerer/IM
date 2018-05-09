@@ -1,9 +1,6 @@
 package com.example.im.login;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.im.Constant;
-import com.example.im.MainActivity;
 import com.example.im.R;
-import com.example.im.client.ConnectionService;
 import com.example.im.client.http.CommonJsonCallback;
 import com.example.im.client.http.CommonOkhttpClient;
 import com.example.im.client.http.CommonRequest;
@@ -28,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText mEtUserName;

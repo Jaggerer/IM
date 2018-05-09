@@ -121,9 +121,6 @@ public abstract class MessageService {
         byteBuffer.putInt(body.length);
         byteBuffer.put(MessageType.getMessageType(message));
         byteBuffer.put(body);
-        Logger.d(body);
-//        Message deMessage = (Message) SerializationUtils.deserialize(body, VoiceMessage.class);
-//        Logger.d(deMessage);
 
         byteBuffer.flip();
         try {

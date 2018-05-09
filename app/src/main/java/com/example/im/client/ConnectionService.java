@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Base64;
 import android.util.Log;
 
 import com.example.im.IMNotificationManager;
-import com.example.im.MainActivity;
 import com.example.im.chat.ChatActivity;
 import com.example.im.client.nio.ClientMessageService;
 import com.example.im.client.nio.MessageService;
@@ -18,14 +16,12 @@ import com.example.im.client.nio.domain.IdMessage;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
 import com.example.im.client.nio.domain.VoiceMessage;
-import com.example.im.client.nio.util.SerializationUtils;
 import com.example.im.db.bean.ChatRecordBean;
 import com.example.im.db.bean.MyMessage;
 import com.example.im.db.bean.UserBean;
 import com.example.im.event.RefreshEvent;
 import com.example.im.utils.URIUtils;
 import com.example.im.utils.UserUtils;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 

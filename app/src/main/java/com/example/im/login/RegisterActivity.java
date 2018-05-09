@@ -45,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mEtUserName;
     private EditText mEtPassWord;
     private Button mBtnCommit;
+    private Button mBtnBack;
     File picFile;
 
 
@@ -60,6 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
         mEtUserName = findViewById(R.id.et_username);
         mEtPassWord = findViewById(R.id.et_password);
         mBtnCommit = findViewById(R.id.btn_commit);
+        mBtnBack = findViewById(R.id.btn_back);
+        mBtnBack.setOnClickListener(view -> finish());
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

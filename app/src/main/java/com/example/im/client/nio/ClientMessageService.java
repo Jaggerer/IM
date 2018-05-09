@@ -25,7 +25,7 @@ public class ClientMessageService extends MessageService {
             MyMessage myMessage = new MyMessage();
             PicMessage picMessage = (PicMessage) message;
 
-            Logger.d((picMessage.getPicUrl()));
+            Logger.d("收到图片的URL为--> " + (picMessage.getPicUrl()));
 
             myMessage.putPicMessage(picMessage);
             mBinder.receiveMessage(myMessage);

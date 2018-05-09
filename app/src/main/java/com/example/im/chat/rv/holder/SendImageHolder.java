@@ -63,12 +63,11 @@ public class SendImageHolder extends BaseViewHolder<MyMessage> {
             mTvSendStatus.setVisibility(View.INVISIBLE);
         } else {
             mTvSendStatus.setVisibility(View.VISIBLE);
-            mTvSendStatus.setText("已发送");
+            mTvSendStatus.setText("");
             mIvFailResend.setVisibility(View.GONE);
             mPbLoad.setVisibility(View.GONE);
         }
-        Logger.d(Uri.fromFile(new File(myMessage.getFileDir())).toString());
-        ImageLoaderFactory.getLoader().load(mIvPicture,Uri.fromFile(new File(myMessage.getFileDir())).toString() , R.mipmap.ic_launcher, null);
+        ImageLoaderFactory.getLoader().load(mIvPicture, Uri.fromFile(new File(myMessage.getFileDir())).toString(), R.mipmap.ic_launcher, null);
 
         mIvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
