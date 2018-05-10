@@ -5,11 +5,14 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.im.client.nio.util.DownloadUtil;
 import com.example.im.db.bean.MyMessage;
 import com.example.im.R;
+import com.example.im.utils.UserUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +36,7 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
         this.mContext = context.getApplicationContext();
         currentMsg = msg;
         currentPlayListener = this;
-        currentObjectId = msg.getFromId();
+        currentObjectId = UserUtils.getCurrentUser(context);
     }
 
     @SuppressWarnings("resource")
@@ -132,14 +135,15 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
             String localPath = myMessage.getFileDir();
             startPlayRecord(localPath, true);
         } else {// 如果是收到的消息，则需要先下载后播放
-            String localPath = downloadVoice(myMessage.getFileDir());
+            String localPath = getFilePath();
             startPlayRecord(localPath, true);
         }
     }
 
-    // todo 从服务端下载音频并存储到本地
-    private String downloadVoice(String fileDir) {
-        return null;
+    public String getFilePath() {
+        String fileName = DownloadUtil.get().getNameFromUrl(myMessage.getContent());
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "voice" + File.separator + fileName);
+        return file.getPath();
     }
 
 }

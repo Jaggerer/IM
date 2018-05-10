@@ -6,6 +6,7 @@ import com.example.im.client.nio.domain.Message;
 import com.example.im.client.nio.domain.MessageType;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
+import com.example.im.client.nio.domain.VoiceMessage;
 import com.example.im.db.bean.MyMessage;
 import com.orhanobut.logger.Logger;
 
@@ -37,6 +38,10 @@ public class ClientMessageService extends MessageService {
             myMessage.putStringMessage(stringMessage);
             mBinder.receiveMessage(myMessage);
         } else if (messageType == MessageType.voiceMessage) {
+            MyMessage myMessage = new MyMessage();
+            VoiceMessage voiceMessage = (VoiceMessage) message;
+            myMessage.putVoiceMessage(voiceMessage);
+            mBinder.receiveMessage(myMessage);
             Logger.d("收到消息,类型为: 语音");
         }
     }

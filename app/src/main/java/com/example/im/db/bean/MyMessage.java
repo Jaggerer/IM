@@ -3,6 +3,7 @@ package com.example.im.db.bean;
 import com.example.im.Constant;
 import com.example.im.client.nio.domain.PicMessage;
 import com.example.im.client.nio.domain.StringMessage;
+import com.example.im.client.nio.domain.VoiceMessage;
 
 import java.io.File;
 
@@ -121,6 +122,16 @@ public class MyMessage extends RealmObject implements Cloneable {
         toId = picMessage.getTo();
         createTime = picMessage.getCreatedTime();
         content = Constant.HTTP_HOST_URL + "/" + picMessage.getPicUrl();
+
+    }
+
+    public void putVoiceMessage(VoiceMessage voiceMessage) {
+        messageType = MyMessage.TYPE_VOICE;
+        fromId = voiceMessage.getFrom();
+        toId = voiceMessage.getTo();
+        createTime = voiceMessage.getCreatedTime();
+        recorderLength = voiceMessage.getRecorderLength();
+        content = Constant.HTTP_HOST_URL + voiceMessage.getVoiceUrl();
 
     }
 }
